@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: 'Inter', system_ui, sans-serif;
+@layer base {
+  :root {
+    --tw-color-primary: #00d4c8;
+  }
+}
+
+.heading-font {
+  font-family: 'Space Grotesk', sans-serif;
 }

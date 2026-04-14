@@ -10,16 +10,15 @@ function App() {
   const [currentScreen, setCurrentScreen] = useState<'home' | 'upload' | 'results' | 'history'>('home');
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
-      {/* Sidebar */}
+    <div className="flex h-screen bg-gray-50 overflow-hidden font-sans">
+      {/* Sidebar - will look like the landing page */}
       <Sidebar currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} />
 
-      {/* Main Content Area */}
+      {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
 
-        {/* Dynamic Content */}
-        <main className="flex-1 overflow-auto p-8">
+        <main className="flex-1 overflow-auto p-8 bg-white">
           {currentScreen === 'home' && <DashboardHome onUploadClick={() => setCurrentScreen('upload')} />}
           {currentScreen === 'upload' && <UploadScreen onResultsReady={() => setCurrentScreen('results')} />}
           {/* {currentScreen === 'results' && <ResultsScreen />} */}

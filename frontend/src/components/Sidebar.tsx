@@ -15,8 +15,8 @@ export default function Sidebar({
     <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
       <div className="p-6 border-b">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-blue-600 rounded-xl flex items-center justify-center">
-            <span className="text-white font-bold text-xl">£</span>
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+            <img src="/src/assets/LogoNoBG.png" alt="Logo" className="w-10 h-10" />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">CashFlowNow</h1>
         </div>
