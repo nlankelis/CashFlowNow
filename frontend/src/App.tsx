@@ -1,35 +1,30 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import Sidebar from './components/Sidebar';
+import Header from './components/Header';
+import DashboardHome from './components/DashboardHome';
+import UploadScreen from './components/UploadScreen';
+import ResultsScreen from './components/ResultsScreen';
+import HistoryScreen from './components/HistoryScreen';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [currentScreen, setCurrentScreen] = useState<'home' | 'upload' | 'results' | 'history'>('home');
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="flex h-screen bg-gray-50 overflow-hidden font-sans">
+      <Sidebar currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} />
+
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <Header />
+
+        <main className="flex-1 overflow-auto p-8 bg-white">
+          {currentScreen === 'home' && <DashboardHome onUploadClick={() => setCurrentScreen('upload')} />}
+          {currentScreen === 'upload' && <UploadScreen onResultsReady={() => setCurrentScreen('results')} />}
+          {currentScreen === 'results' && <ResultsScreen onBackToHome={() => setCurrentScreen('home')} />}
+          {currentScreen === 'history' && <HistoryScreen />}
+        </main>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR testing test again
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
