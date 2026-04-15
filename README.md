@@ -57,7 +57,7 @@ The project demonstrates a technically feasible, financially viable solution to 
 
 ## Team
 - **nlankelis** - Nojus Lankelis
-- **stefan-alexandru47** - Stefan Alexandru Necsoiu
--(Full team contributions available via GitHub Insights)
+- **stefan-alexandru47** - Stefan Alexandru Necsoiu  
+(Full team contributions available via GitHub Insights)
 
 Developed for CM3141 Pirate Studies • April 2026
