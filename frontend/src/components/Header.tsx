@@ -19,7 +19,9 @@ export default function Header({ currentUser, onLogout }: HeaderProps) {
   return (
     <header className="h-16 bg-white border-b px-8 flex items-center justify-between relative">
       <div className="flex items-center gap-3">
-        <span className="text-[#0a2540] font-semibold">Good morning, {currentUser.full_name}</span>
+        <span className="text-[#0a2540] font-semibold">
+          Good morning, {currentUser.full_name}
+        </span>
       </div>
 
       <div className="flex items-center gap-6">
@@ -33,7 +35,9 @@ export default function Header({ currentUser, onLogout }: HeaderProps) {
             {initial}
           </div>
           <div>
-            <p className="text-sm font-medium text-[#0a2540]">{currentUser.full_name}</p>
+            <p className="text-sm font-medium text-[#0a2540]">
+              {currentUser.full_name}
+            </p>
             <p className="text-xs text-gray-500 -mt-0.5">{currentUser.email}</p>
           </div>
           <ChevronDown size={16} className="text-gray-400" />

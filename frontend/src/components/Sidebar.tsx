@@ -8,7 +8,11 @@ interface SidebarProps {
   onLogout: () => void;
 }
 
-export default function Sidebar({ currentScreen, setCurrentScreen, onLogout }: SidebarProps) {
+export default function Sidebar({
+  currentScreen,
+  setCurrentScreen,
+  onLogout,
+}: SidebarProps) {
   return (
     <div className="w-72 bg-white border-r border-gray-100 flex flex-col">
       <div className="p-6 border-b">
@@ -24,7 +28,9 @@ export default function Sidebar({ currentScreen, setCurrentScreen, onLogout }: S
         <button
           onClick={() => setCurrentScreen("home")}
           className={`w-full flex items-center gap-3 px-5 py-4 rounded-3xl text-left transition-all ${
-            currentScreen === "home" ? "bg-[#00d4c8] text-[#0a2540] font-medium" : "hover:bg-gray-50"
+            currentScreen === "home"
+              ? "bg-[#00d4c8] text-[#0a2540] font-medium"
+              : "hover:bg-gray-50"
           }`}
         >
           <Home size={22} />
@@ -34,7 +40,9 @@ export default function Sidebar({ currentScreen, setCurrentScreen, onLogout }: S
         <button
           onClick={() => setCurrentScreen("upload")}
           className={`w-full flex items-center gap-3 px-5 py-4 rounded-3xl text-left transition-all ${
-            currentScreen === "upload" ? "bg-[#00d4c8] text-[#0a2540] font-medium" : "hover:bg-gray-50"
+            currentScreen === "upload"
+              ? "bg-[#00d4c8] text-[#0a2540] font-medium"
+              : "hover:bg-gray-50"
           }`}
         >
           <Upload size={22} />
@@ -44,7 +52,9 @@ export default function Sidebar({ currentScreen, setCurrentScreen, onLogout }: S
         <button
           onClick={() => setCurrentScreen("history")}
           className={`w-full flex items-center gap-3 px-5 py-4 rounded-3xl text-left transition-all ${
-            currentScreen === "history" ? "bg-[#00d4c8] text-[#0a2540] font-medium" : "hover:bg-gray-50"
+            currentScreen === "history"
+              ? "bg-[#00d4c8] text-[#0a2540] font-medium"
+              : "hover:bg-gray-50"
           }`}
         >
           <History size={22} />

@@ -13,7 +13,9 @@ const AUTH_STORAGE_KEY = "cashflownow-auth-user";
 
 function App() {
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
-  const [currentScreen, setCurrentScreen] = useState<"home" | "upload" | "results" | "history">("home");
+  const [currentScreen, setCurrentScreen] = useState<
+    "home" | "upload" | "results" | "history"
+  >("home");
   const [results, setResults] = useState<InvoiceDecisionResponse[]>([]);
 
   useEffect(() => {
@@ -47,8 +49,8 @@ function App() {
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden font-sans">
-      <Sidebar 
-        currentScreen={currentScreen} 
+      <Sidebar
+        currentScreen={currentScreen}
         setCurrentScreen={setCurrentScreen}
         onLogout={handleLogout}
       />
@@ -57,7 +59,9 @@ function App() {
         <Header currentUser={currentUser} onLogout={handleLogout} />
 
         <main className="flex-1 overflow-auto p-8 bg-white">
-          {currentScreen === "home" && <DashboardHome onUploadClick={() => setCurrentScreen("upload")} />}
+          {currentScreen === "home" && (
+            <DashboardHome onUploadClick={() => setCurrentScreen("upload")} />
+          )}
           {currentScreen === "upload" && (
             <UploadScreen
               onResultsReady={(invoiceResults) => {

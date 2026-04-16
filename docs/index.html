@@ -1,455 +1,826 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="CashFlowNow – AI-powered invoice finance for UK SMEs. Get paid the day you finish the job instead of waiting 60-90 days.">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="CashFlowNow – AI-powered invoice finance for UK SMEs. Get paid the day you finish the job instead of waiting 60-90 days."
+    />
     <title>CashFlowNow • Instant Cash for Your Invoices</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap');
-        
-        :root {
-            --tw-color-primary: #00d4c8;
-        }
-        
-        .tailwind-ready * {
-            font-family: 'Inter', system_ui, sans-serif;
-        }
-        
-        .heading-font {
-            font-family: 'Space Grotesk', sans-serif;
-        }
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap");
 
-        .hero-bg {
-            background: linear-gradient(135deg, #0a2540 0%, #112b4e 100%);
-        }
-        
-        .card-hover {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .card-hover:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-        }
-        
-        .gif-container {
-            animation: float 3s ease-in-out infinite;
-        }
+      :root {
+        --tw-color-primary: #00d4c8;
+      }
+
+      .tailwind-ready * {
+        font-family: "Inter", system_ui, sans-serif;
+      }
+
+      .heading-font {
+        font-family: "Space Grotesk", sans-serif;
+      }
+
+      .hero-bg {
+        background: linear-gradient(135deg, #0a2540 0%, #112b4e 100%);
+      }
+
+      .card-hover {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .card-hover:hover {
+        transform: translateY(-4px);
+        box-shadow:
+          0 20px 25px -5px rgb(0 0 0 / 0.1),
+          0 8px 10px -6px rgb(0 0 0 / 0.1);
+      }
+
+      .gif-container {
+        animation: float 3s ease-in-out infinite;
+      }
     </style>
-</head>
-<body class="tailwind-ready">
-
+  </head>
+  <body class="tailwind-ready">
     <!-- NAVBAR -->
     <nav class="bg-white border-b sticky top-0 z-50 shadow-sm">
-        <div class="max-w-screen-2xl mx-auto px-8 py-5 flex items-center justify-between">
-            <div class="flex items-center gap-x-3">
-                <img src="LogoNoBG.png" alt="CashFlowNow Logo" class="h-9 w-auto">
-                <span class="heading-font text-3xl font-semibold tracking-tighter text-[#0a2540]">CashFlowNow</span>
-            </div>
-            
-            <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
-                <a href="#how" class="hover:text-[#00d4c8] transition-colors">How it Works</a>
-                <a href="#for-smes" class="hover:text-[#00d4c8] transition-colors">For SMEs</a>
-                <a href="#for-banks" class="hover:text-[#00d4c8] transition-colors">For Banks</a>
-                <a href="#moat" class="hover:text-[#00d4c8] transition-colors">Our Edge</a>
-                <a href="#demo" class="hover:text-[#00d4c8] transition-colors">Demo</a>
-            </div>
-            
-            <div class="flex items-center gap-x-4">
-                <a href="https://cash-flow-now-ten.vercel.app"
-                   class="px-6 py-2.5 text-sm font-semibold border border-[#0a2540] text-[#0a2540] rounded-2xl hover:bg-[#0a2540] hover:text-white transition-all">
-                    Log in
-                </a>
-                <a href="#get-started" 
-                   class="px-8 py-2.5 bg-[#00d4c8] hover:bg-[#00b8ae] text-white font-semibold rounded-2xl transition-all flex items-center gap-x-2">
-                    Get Paid Today
-                    <span class="text-[#2d2c9] text-xl">➔</span>
-                </a>
-            </div>
+      <div
+        class="max-w-screen-2xl mx-auto px-8 py-5 flex items-center justify-between"
+      >
+        <div class="flex items-center gap-x-3">
+          <img src="LogoNoBG.png" alt="CashFlowNow Logo" class="h-9 w-auto" />
+          <span
+            class="heading-font text-3xl font-semibold tracking-tighter text-[#0a2540]"
+            >CashFlowNow</span
+          >
         </div>
+
+        <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
+          <a href="#how" class="hover:text-[#00d4c8] transition-colors"
+            >How it Works</a
+          >
+          <a href="#for-smes" class="hover:text-[#00d4c8] transition-colors"
+            >For SMEs</a
+          >
+          <a href="#for-banks" class="hover:text-[#00d4c8] transition-colors"
+            >For Banks</a
+          >
+          <a href="#moat" class="hover:text-[#00d4c8] transition-colors"
+            >Our Edge</a
+          >
+          <a href="#demo" class="hover:text-[#00d4c8] transition-colors"
+            >Demo</a
+          >
+        </div>
+
+        <div class="flex items-center gap-x-4">
+          <a
+            href="https://cash-flow-now-ten.vercel.app"
+            class="px-6 py-2.5 text-sm font-semibold border border-[#0a2540] text-[#0a2540] rounded-2xl hover:bg-[#0a2540] hover:text-white transition-all"
+          >
+            Log in
+          </a>
+          <a
+            href="#get-started"
+            class="px-8 py-2.5 bg-[#00d4c8] hover:bg-[#00b8ae] text-white font-semibold rounded-2xl transition-all flex items-center gap-x-2"
+          >
+            Get Paid Today
+            <span class="text-[#2d2c9] text-xl">➔</span>
+          </a>
+        </div>
+      </div>
     </nav>
 
     <!-- HERO -->
     <header class="hero-bg text-white">
-        <div class="max-w-screen-2xl mx-auto px-8 pt-16 pb-20 grid md:grid-cols-2 gap-16 items-center">
-            <div class="space-y-8">
-                <div class="inline-flex items-center gap-x-2 bg-white/10 text-white text-sm font-medium px-6 py-2 rounded-3xl border border-white/20 backdrop-blur-md">
-                    <span class="relative flex h-3 w-3">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00d4c8] opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-3 w-3 bg-[#00d4c8]"></span>
-                    </span>
-                    LIVE IN THE UK • AI-POWERED INVOICE FINANCE
-                </div>
-                
-                <h1 class="heading-font text-6xl md:text-7xl leading-none font-semibold tracking-tighter">
-                    Get paid the <span class="text-[#00d4c8]">day</span> you finish the job.
-                </h1>
-                
-                <p class="text-2xl text-white/90 max-w-lg">
-                    Turn 60–90 day invoices into cash in your bank in <span class="font-semibold text-[#00d4c8]">24 hours</span>. 
-                    No paperwork. No waiting. Just growth.
-                </p>
-                
-                <div class="flex flex-wrap gap-4">
-                    <a href="#get-started" class="px-10 py-5 bg-[#00d4c8] hover:bg-[#00b8ae] text-[#0a2540] font-semibold text-xl rounded-3xl flex items-center gap-x-3 transition-all">
-                        Connect Xero / QuickBooks / Sage
-                    </a>
-                    <a href="#how" class="px-10 py-5 border-2 border-white hover:bg-white/10 text-white font-semibold text-xl rounded-3xl flex items-center gap-x-3 transition-all">
-                        Watch how it works <span class="text-3xl">→</span>
-                    </a>
-                </div>
-                
-                <div class="flex items-center gap-x-8 text-sm">
-                    <div class="flex -space-x-4">
-                        <div class="w-8 h-8 bg-white rounded-2xl flex items-center justify-center text-[#0a2540] text-xs font-bold border-2 border-[#0a2540]">X</div>
-                        <div class="w-8 h-8 bg-white rounded-2xl flex items-center justify-center text-[#0a2540] text-xs font-bold border-2 border-[#0a2540]">Q</div>
-                        <div class="w-8 h-8 bg-white rounded-2xl flex items-center justify-center text-[#0a2540] text-xs font-bold border-2 border-[#0a2540]">S</div>
-                    </div>
-                    <p class="text-white/80">Works with Xero, QuickBooks, Sage &amp; Peppol</p>
-                    
-                    <div class="h-6 w-px bg-white/30"></div>
-                    <div class="flex items-center gap-x-1 text-[#00d4c8]">
-                        <span class="font-semibold">Backed by Tier-1 UK banks</span>
-                    </div>
-                </div>
+      <div
+        class="max-w-screen-2xl mx-auto px-8 pt-16 pb-20 grid md:grid-cols-2 gap-16 items-center"
+      >
+        <div class="space-y-8">
+          <div
+            class="inline-flex items-center gap-x-2 bg-white/10 text-white text-sm font-medium px-6 py-2 rounded-3xl border border-white/20 backdrop-blur-md"
+          >
+            <span class="relative flex h-3 w-3">
+              <span
+                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00d4c8] opacity-75"
+              ></span>
+              <span
+                class="relative inline-flex rounded-full h-3 w-3 bg-[#00d4c8]"
+              ></span>
+            </span>
+            LIVE IN THE UK • AI-POWERED INVOICE FINANCE
+          </div>
+
+          <h1
+            class="heading-font text-6xl md:text-7xl leading-none font-semibold tracking-tighter"
+          >
+            Get paid the <span class="text-[#00d4c8]">day</span> you finish the
+            job.
+          </h1>
+
+          <p class="text-2xl text-white/90 max-w-lg">
+            Turn 60–90 day invoices into cash in your bank in
+            <span class="font-semibold text-[#00d4c8]">24 hours</span>. No
+            paperwork. No waiting. Just growth.
+          </p>
+
+          <div class="flex flex-wrap gap-4">
+            <a
+              href="#get-started"
+              class="px-10 py-5 bg-[#00d4c8] hover:bg-[#00b8ae] text-[#0a2540] font-semibold text-xl rounded-3xl flex items-center gap-x-3 transition-all"
+            >
+              Connect Xero / QuickBooks / Sage
+            </a>
+            <a
+              href="#how"
+              class="px-10 py-5 border-2 border-white hover:bg-white/10 text-white font-semibold text-xl rounded-3xl flex items-center gap-x-3 transition-all"
+            >
+              Watch how it works <span class="text-3xl">→</span>
+            </a>
+          </div>
+
+          <div class="flex items-center gap-x-8 text-sm">
+            <div class="flex -space-x-4">
+              <div
+                class="w-8 h-8 bg-white rounded-2xl flex items-center justify-center text-[#0a2540] text-xs font-bold border-2 border-[#0a2540]"
+              >
+                X
+              </div>
+              <div
+                class="w-8 h-8 bg-white rounded-2xl flex items-center justify-center text-[#0a2540] text-xs font-bold border-2 border-[#0a2540]"
+              >
+                Q
+              </div>
+              <div
+                class="w-8 h-8 bg-white rounded-2xl flex items-center justify-center text-[#0a2540] text-xs font-bold border-2 border-[#0a2540]"
+              >
+                S
+              </div>
             </div>
-            
-            <!-- Visual -->
-            <div class="relative flex justify-center gif-container">
-                <div class="bg-white/10 backdrop-blur-3xl p-8 rounded-3xl border border-white/20 shadow-2xl w-full max-w-md text-center">
-                    <div class="text-8xl mb-6 animate-bounce">💸</div>
-                    <div class="text-7xl mb-4">📄 → 🏦</div>
-                    <p class="text-2xl font-semibold text-[#00d4c8]">24 hours</p>
-                    <p class="text-white/90 text-xl">Instant cash for your invoice</p>
-                    
-                    <div class="absolute top-8 -left-4 bg-white text-[#0a2540] text-sm font-semibold px-5 py-2 rounded-3xl shadow-xl flex items-center gap-x-2">
-                        AI verified
-                    </div>
-                    <div class="absolute top-8 -right-4 bg-white text-[#0a2540] text-sm font-semibold px-4 py-2 rounded-3xl shadow-xl flex items-center gap-x-1">
-                        Bank-backed
-                    </div>
-                </div>
+            <p class="text-white/80">
+              Works with Xero, QuickBooks, Sage &amp; Peppol
+            </p>
+
+            <div class="h-6 w-px bg-white/30"></div>
+            <div class="flex items-center gap-x-1 text-[#00d4c8]">
+              <span class="font-semibold">Backed by Tier-1 UK banks</span>
             </div>
+          </div>
         </div>
+
+        <!-- Visual -->
+        <div class="relative flex justify-center gif-container">
+          <div
+            class="bg-white/10 backdrop-blur-3xl p-8 rounded-3xl border border-white/20 shadow-2xl w-full max-w-md text-center"
+          >
+            <div class="text-8xl mb-6 animate-bounce">💸</div>
+            <div class="text-7xl mb-4">📄 → 🏦</div>
+            <p class="text-2xl font-semibold text-[#00d4c8]">24 hours</p>
+            <p class="text-white/90 text-xl">Instant cash for your invoice</p>
+
+            <div
+              class="absolute top-8 -left-4 bg-white text-[#0a2540] text-sm font-semibold px-5 py-2 rounded-3xl shadow-xl flex items-center gap-x-2"
+            >
+              AI verified
+            </div>
+            <div
+              class="absolute top-8 -right-4 bg-white text-[#0a2540] text-sm font-semibold px-4 py-2 rounded-3xl shadow-xl flex items-center gap-x-1"
+            >
+              Bank-backed
+            </div>
+          </div>
+        </div>
+      </div>
     </header>
 
     <!-- WHAT IS INVOICE FINANCE -->
     <section class="py-20 bg-white">
-        <div class="max-w-screen-2xl mx-auto px-8">
-            <div class="grid md:grid-cols-12 gap-16 items-center">
-                <div class="md:col-span-5">
-                    <span class="px-4 py-2 bg-[#00d4c8]/10 text-[#00d4c8] text-sm font-semibold rounded-3xl">THE BASICS</span>
-                    <h2 class="heading-font text-5xl font-semibold tracking-tighter text-[#0a2540] mt-4 leading-none">
-                        What is Invoice Finance?
-                    </h2>
-                    <p class="mt-6 text-xl text-gray-600">
-                        A way for a business to get paid for its work the day it's finished, rather than waiting months for a customer to settle the bill.
-                    </p>
-                    <p class="mt-4 text-xl text-gray-600">
-                        It turns <span class="font-semibold">"money-on-paper"</span> into <span class="font-semibold text-[#00d4c8]">"cash-in-the-bank"</span> instantly.
-                    </p>
-                </div>
-                
-                <div class="md:col-span-7">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="bg-gray-50 p-8 rounded-3xl">
-                            <div class="text-5xl mb-6">📤</div>
-                            <h4 class="font-semibold text-xl">You issue an invoice</h4>
-                            <p class="text-gray-600 mt-2">Work complete. Customer now owes you.</p>
-                        </div>
-                        <div class="bg-gray-50 p-8 rounded-3xl">
-                            <div class="text-5xl mb-6">⏳</div>
-                            <h4 class="font-semibold text-xl">Normally wait 30–90 days</h4>
-                            <p class="text-gray-600 mt-2">Cashflow stuck. Growth stalled.</p>
-                        </div>
-                        <div class="bg-[#00d4c8] text-[#0a2540] p-8 rounded-3xl">
-                            <div class="text-5xl mb-6">🏦</div>
-                            <h4 class="font-semibold text-xl">We buy it instantly</h4>
-                            <p class="mt-2">You get cash today. Debtor pays us later.</p>
-                        </div>
-                    </div>
-                </div>
+      <div class="max-w-screen-2xl mx-auto px-8">
+        <div class="grid md:grid-cols-12 gap-16 items-center">
+          <div class="md:col-span-5">
+            <span
+              class="px-4 py-2 bg-[#00d4c8]/10 text-[#00d4c8] text-sm font-semibold rounded-3xl"
+              >THE BASICS</span
+            >
+            <h2
+              class="heading-font text-5xl font-semibold tracking-tighter text-[#0a2540] mt-4 leading-none"
+            >
+              What is Invoice Finance?
+            </h2>
+            <p class="mt-6 text-xl text-gray-600">
+              A way for a business to get paid for its work the day it's
+              finished, rather than waiting months for a customer to settle the
+              bill.
+            </p>
+            <p class="mt-4 text-xl text-gray-600">
+              It turns <span class="font-semibold">"money-on-paper"</span> into
+              <span class="font-semibold text-[#00d4c8]"
+                >"cash-in-the-bank"</span
+              >
+              instantly.
+            </p>
+          </div>
+
+          <div class="md:col-span-7">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="bg-gray-50 p-8 rounded-3xl">
+                <div class="text-5xl mb-6">📤</div>
+                <h4 class="font-semibold text-xl">You issue an invoice</h4>
+                <p class="text-gray-600 mt-2">
+                  Work complete. Customer now owes you.
+                </p>
+              </div>
+              <div class="bg-gray-50 p-8 rounded-3xl">
+                <div class="text-5xl mb-6">⏳</div>
+                <h4 class="font-semibold text-xl">Normally wait 30–90 days</h4>
+                <p class="text-gray-600 mt-2">
+                  Cashflow stuck. Growth stalled.
+                </p>
+              </div>
+              <div class="bg-[#00d4c8] text-[#0a2540] p-8 rounded-3xl">
+                <div class="text-5xl mb-6">🏦</div>
+                <h4 class="font-semibold text-xl">We buy it instantly</h4>
+                <p class="mt-2">You get cash today. Debtor pays us later.</p>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
     </section>
 
     <!-- CORE PROBLEM -->
     <section id="problem" class="py-20 bg-[#0a2540] text-white">
-        <div class="max-w-screen-2xl mx-auto px-8">
-            <div class="text-center max-w-2xl mx-auto">
-                <span class="text-[#00d4c8] font-semibold">THE PAIN POINT</span>
-                <h2 class="heading-font text-5xl font-semibold tracking-tighter mt-3">SMEs are the backbone of the UK economy yet trapped by 60–90 day payment terms.</h2>
-                <p class="mt-6 text-xl text-white/80">Traditional banks have the capital but lack the tech to verify thousands of micro-invoices safely and cheaply.</p>
+      <div class="max-w-screen-2xl mx-auto px-8">
+        <div class="text-center max-w-2xl mx-auto">
+          <span class="text-[#00d4c8] font-semibold">THE PAIN POINT</span>
+          <h2 class="heading-font text-5xl font-semibold tracking-tighter mt-3">
+            SMEs are the backbone of the UK economy yet trapped by 60–90 day
+            payment terms.
+          </h2>
+          <p class="mt-6 text-xl text-white/80">
+            Traditional banks have the capital but lack the tech to verify
+            thousands of micro-invoices safely and cheaply.
+          </p>
+        </div>
+
+        <div class="mt-16 grid md:grid-cols-3 gap-8 text-center">
+          <!-- Card 1: Cashflow crunch -->
+          <div class="bg-white/10 backdrop-blur p-8 rounded-3xl">
+            <div
+              class="w-14 h-14 mx-auto mb-6 bg-[#00d4c8]/10 text-[#00d4c8] rounded-2xl flex items-center justify-center text-4xl font-semibold"
+            >
+              1
             </div>
-            
-            <div class="mt-16 grid md:grid-cols-3 gap-8 text-center">
-        <!-- Card 1: Cashflow crunch -->
-        <div class="bg-white/10 backdrop-blur p-8 rounded-3xl">
-            <div class="w-14 h-14 mx-auto mb-6 bg-[#00d4c8]/10 text-[#00d4c8] rounded-2xl flex items-center justify-center text-4xl font-semibold">1</div>
             <h3 class="text-2xl font-semibold">Cashflow crunch</h3>
-            <p class="mt-4 text-white/70">Can't reinvest, hire, or grow because money is stuck on paper.</p>
-        </div>
+            <p class="mt-4 text-white/70">
+              Can't reinvest, hire, or grow because money is stuck on paper.
+            </p>
+          </div>
 
-        <!-- Card 2: No-man's land -->
-        <div class="bg-white/10 backdrop-blur p-8 rounded-3xl">
-            <div class="w-14 h-14 mx-auto mb-6 bg-[#00d4c8]/10 text-[#00d4c8] rounded-2xl flex items-center justify-center text-4xl font-semibold">2</div>
+          <!-- Card 2: No-man's land -->
+          <div class="bg-white/10 backdrop-blur p-8 rounded-3xl">
+            <div
+              class="w-14 h-14 mx-auto mb-6 bg-[#00d4c8]/10 text-[#00d4c8] rounded-2xl flex items-center justify-center text-4xl font-semibold"
+            >
+              2
+            </div>
             <h3 class="text-2xl font-semibold">No-man's land</h3>
-            <p class="mt-4 text-white/70">Banks can't afford manual checks on small invoices.</p>
-        </div>
+            <p class="mt-4 text-white/70">
+              Banks can't afford manual checks on small invoices.
+            </p>
+          </div>
 
-        <!-- Card 3: Growth blocked -->
-        <div class="bg-white/10 backdrop-blur p-8 rounded-3xl">
-            <div class="w-14 h-14 mx-auto mb-6 bg-[#00d4c8]/10 text-[#00d4c8] rounded-2xl flex items-center justify-center text-4xl font-semibold">3</div>
+          <!-- Card 3: Growth blocked -->
+          <div class="bg-white/10 backdrop-blur p-8 rounded-3xl">
+            <div
+              class="w-14 h-14 mx-auto mb-6 bg-[#00d4c8]/10 text-[#00d4c8] rounded-2xl flex items-center justify-center text-4xl font-semibold"
+            >
+              3
+            </div>
             <h3 class="text-2xl font-semibold">Growth blocked</h3>
-            <p class="mt-4 text-white/70">The very businesses driving the UK economy are held back.</p>
+            <p class="mt-4 text-white/70">
+              The very businesses driving the UK economy are held back.
+            </p>
+          </div>
         </div>
-    </div>
-        </div>
+      </div>
     </section>
 
     <!-- OUR SOLUTION -->
     <section class="py-20 bg-white" id="solution">
-        <div class="max-w-screen-2xl mx-auto px-8">
-            <div class="text-center">
-                <span class="px-4 py-2 bg-[#00d4c8]/10 text-[#00d4c8] rounded-3xl text-sm font-bold">OUR SOLUTION</span>
-                <h2 class="heading-font text-5xl font-semibold tracking-tighter text-[#0a2540] mt-4">A Digital Clearing House that connects SME ledgers directly to institutional bank capital.</h2>
-                <p class="mt-6 max-w-xl mx-auto text-xl text-gray-600">We remove all the "handy work" for banks by automating risk, verification, and collection with Agentic AI.</p>
-            </div>
-            
-            <div class="mt-16 grid md:grid-cols-4 gap-8">
-                <div class="card-hover bg-white border p-8 rounded-3xl text-center">
-                    <div class="text-5xl mb-6">🔌</div>
-                    <h4 class="font-semibold text-xl">Automated Ingestion</h4>
-                    <p class="text-gray-600 mt-3">Connect Xero, QuickBooks or Sage. We scrape unpaid invoices in real-time.</p>
-                </div>
-                <div class="card-hover bg-white border p-8 rounded-3xl text-center">
-                    <div class="text-5xl mb-6">🧠</div>
-                    <h4 class="font-semibold text-xl">Truth Engine™</h4>
-                    <p class="text-gray-600 mt-3">AI verifies work via Peppol, logistics tracking, digital signatures &amp; non-financial data.</p>
-                </div>
-                <div class="card-hover bg-white border p-8 rounded-3xl text-center">
-                    <div class="text-5xl mb-6">🌉</div>
-                    <h4 class="font-semibold text-xl">Capital Bridge</h4>
-                    <p class="text-gray-600 mt-3">Bundle thousands of micro-invoices and buy them instantly using Tier-1 bank capital.</p>
-                </div>
-                <div class="card-hover bg-white border p-8 rounded-3xl text-center">
-                    <div class="text-5xl mb-6">🔄</div>
-                    <h4 class="font-semibold text-xl">Quarterly Settlement</h4>
-                    <p class="text-gray-600 mt-3">Debtors pay us. We repay the bank + spread. You already have your cash.</p>
-                </div>
-            </div>
+      <div class="max-w-screen-2xl mx-auto px-8">
+        <div class="text-center">
+          <span
+            class="px-4 py-2 bg-[#00d4c8]/10 text-[#00d4c8] rounded-3xl text-sm font-bold"
+            >OUR SOLUTION</span
+          >
+          <h2
+            class="heading-font text-5xl font-semibold tracking-tighter text-[#0a2540] mt-4"
+          >
+            A Digital Clearing House that connects SME ledgers directly to
+            institutional bank capital.
+          </h2>
+          <p class="mt-6 max-w-xl mx-auto text-xl text-gray-600">
+            We remove all the "handy work" for banks by automating risk,
+            verification, and collection with Agentic AI.
+          </p>
         </div>
+
+        <div class="mt-16 grid md:grid-cols-4 gap-8">
+          <div class="card-hover bg-white border p-8 rounded-3xl text-center">
+            <div class="text-5xl mb-6">🔌</div>
+            <h4 class="font-semibold text-xl">Automated Ingestion</h4>
+            <p class="text-gray-600 mt-3">
+              Connect Xero, QuickBooks or Sage. We scrape unpaid invoices in
+              real-time.
+            </p>
+          </div>
+          <div class="card-hover bg-white border p-8 rounded-3xl text-center">
+            <div class="text-5xl mb-6">🧠</div>
+            <h4 class="font-semibold text-xl">Truth Engine™</h4>
+            <p class="text-gray-600 mt-3">
+              AI verifies work via Peppol, logistics tracking, digital
+              signatures &amp; non-financial data.
+            </p>
+          </div>
+          <div class="card-hover bg-white border p-8 rounded-3xl text-center">
+            <div class="text-5xl mb-6">🌉</div>
+            <h4 class="font-semibold text-xl">Capital Bridge</h4>
+            <p class="text-gray-600 mt-3">
+              Bundle thousands of micro-invoices and buy them instantly using
+              Tier-1 bank capital.
+            </p>
+          </div>
+          <div class="card-hover bg-white border p-8 rounded-3xl text-center">
+            <div class="text-5xl mb-6">🔄</div>
+            <h4 class="font-semibold text-xl">Quarterly Settlement</h4>
+            <p class="text-gray-600 mt-3">
+              Debtors pay us. We repay the bank + spread. You already have your
+              cash.
+            </p>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- HOW IT WORKS (4-STEP LOOP) -->
     <section id="how" class="py-20 bg-gray-50">
-        <div class="max-w-screen-2xl mx-auto px-8">
-            <div class="text-center mb-12">
-                <h2 class="heading-font text-5xl font-semibold tracking-tighter">The 4-Step Loop</h2>
-                <p class="text-xl text-gray-600 mt-3">From invoice to instant cash – fully automated</p>
-            </div>
-            
-            <div class="relative max-w-5xl mx-auto">
-                <div class="grid md:grid-cols-4 gap-8 relative">
-                    <!-- Step 1 -->
-                    <div class="relative bg-white rounded-3xl p-8 card-hover z-10">
-                        <div class="absolute -top-4 -left-4 bg-[#00d4c8] text-white w-8 h-8 rounded-2xl flex items-center justify-center font-bold text-xl">1</div>
-                        <div class="text-6xl mb-6">🔌</div>
-                        <h4 class="font-semibold text-2xl">Automated Ingestion</h4>
-                        <p class="mt-4 text-gray-600">Your accounting software pushes unpaid invoices to us in real time.</p>
-                    </div>
-                    <!-- Step 2 -->
-                    <div class="relative bg-white rounded-3xl p-8 card-hover z-10">
-                        <div class="absolute -top-4 -left-4 bg-[#00d4c8] text-white w-8 h-8 rounded-2xl flex items-center justify-center font-bold text-xl">2</div>
-                        <div class="text-6xl mb-6">🔍</div>
-                        <h4 class="font-semibold text-2xl">Truth Engine™ Verification</h4>
-                        <p class="mt-4 text-gray-600">AI cross-checks Peppol, shipping logs, emails &amp; GPS to kill fraud instantly.</p>
-                    </div>
-                    <!-- Step 3 -->
-                    <div class="relative bg-white rounded-3xl p-8 card-hover z-10">
-                        <div class="absolute -top-4 -left-4 bg-[#00d4c8] text-white w-8 h-8 rounded-2xl flex items-center justify-center font-bold text-xl">3</div>
-                        <div class="text-6xl mb-6">💰</div>
-                        <h4 class="font-semibold text-2xl">Capital Bridge</h4>
-                        <p class="mt-4 text-gray-600">We bundle verified invoices and fund them instantly from our bank credit line.</p>
-                    </div>
-                    <!-- Step 4 -->
-                    <div class="relative bg-white rounded-3xl p-8 card-hover z-10">
-                        <div class="absolute -top-4 -left-4 bg-[#00d4c8] text-white w-8 h-8 rounded-2xl flex items-center justify-center font-bold text-xl">4</div>
-                        <div class="text-6xl mb-6">🔄</div>
-                        <h4 class="font-semibold text-2xl">Settlement</h4>
-                        <p class="mt-4 text-gray-600">60–90 days later debtors pay → bank gets capital + interest → we keep the spread.</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="text-center mt-12 text-sm text-gray-500 flex items-center justify-center gap-x-2">
-                <div class="h-px w-12 bg-gray-300"></div>
-                TLDR: 10 × £1,000 invoices → we pay £600 instantly (via bank) → collect £1,000 later → repay bank £800, keep £200 spread
-                <div class="h-px w-12 bg-gray-300"></div>
-            </div>
+      <div class="max-w-screen-2xl mx-auto px-8">
+        <div class="text-center mb-12">
+          <h2 class="heading-font text-5xl font-semibold tracking-tighter">
+            The 4-Step Loop
+          </h2>
+          <p class="text-xl text-gray-600 mt-3">
+            From invoice to instant cash – fully automated
+          </p>
         </div>
+
+        <div class="relative max-w-5xl mx-auto">
+          <div class="grid md:grid-cols-4 gap-8 relative">
+            <!-- Step 1 -->
+            <div class="relative bg-white rounded-3xl p-8 card-hover z-10">
+              <div
+                class="absolute -top-4 -left-4 bg-[#00d4c8] text-white w-8 h-8 rounded-2xl flex items-center justify-center font-bold text-xl"
+              >
+                1
+              </div>
+              <div class="text-6xl mb-6">🔌</div>
+              <h4 class="font-semibold text-2xl">Automated Ingestion</h4>
+              <p class="mt-4 text-gray-600">
+                Your accounting software pushes unpaid invoices to us in real
+                time.
+              </p>
+            </div>
+            <!-- Step 2 -->
+            <div class="relative bg-white rounded-3xl p-8 card-hover z-10">
+              <div
+                class="absolute -top-4 -left-4 bg-[#00d4c8] text-white w-8 h-8 rounded-2xl flex items-center justify-center font-bold text-xl"
+              >
+                2
+              </div>
+              <div class="text-6xl mb-6">🔍</div>
+              <h4 class="font-semibold text-2xl">Truth Engine™ Verification</h4>
+              <p class="mt-4 text-gray-600">
+                AI cross-checks Peppol, shipping logs, emails &amp; GPS to kill
+                fraud instantly.
+              </p>
+            </div>
+            <!-- Step 3 -->
+            <div class="relative bg-white rounded-3xl p-8 card-hover z-10">
+              <div
+                class="absolute -top-4 -left-4 bg-[#00d4c8] text-white w-8 h-8 rounded-2xl flex items-center justify-center font-bold text-xl"
+              >
+                3
+              </div>
+              <div class="text-6xl mb-6">💰</div>
+              <h4 class="font-semibold text-2xl">Capital Bridge</h4>
+              <p class="mt-4 text-gray-600">
+                We bundle verified invoices and fund them instantly from our
+                bank credit line.
+              </p>
+            </div>
+            <!-- Step 4 -->
+            <div class="relative bg-white rounded-3xl p-8 card-hover z-10">
+              <div
+                class="absolute -top-4 -left-4 bg-[#00d4c8] text-white w-8 h-8 rounded-2xl flex items-center justify-center font-bold text-xl"
+              >
+                4
+              </div>
+              <div class="text-6xl mb-6">🔄</div>
+              <h4 class="font-semibold text-2xl">Settlement</h4>
+              <p class="mt-4 text-gray-600">
+                60–90 days later debtors pay → bank gets capital + interest → we
+                keep the spread.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="text-center mt-12 text-sm text-gray-500 flex items-center justify-center gap-x-2"
+        >
+          <div class="h-px w-12 bg-gray-300"></div>
+          TLDR: 10 × £1,000 invoices → we pay £600 instantly (via bank) →
+          collect £1,000 later → repay bank £800, keep £200 spread
+          <div class="h-px w-12 bg-gray-300"></div>
+        </div>
+      </div>
+
+      <!-- LIVE DEMO PICTURES -->
+      <section class="py-20 bg-white">
+        <div class="max-w-screen-2xl mx-auto px-8">
+          <div class="text-center mb-12">
+            <span
+              class="px-4 py-2 bg-[#00d4c8]/10 text-[#00d4c8] text-sm font-semibold rounded-3xl"
+              >LIVE DEMO</span
+            >
+            <h2
+              class="heading-font text-5xl font-semibold tracking-tighter mt-4"
+            >
+              See CashFlowNow in action
+            </h2>
+            <p class="text-xl text-gray-600 mt-3">
+              From upload to instant offer in seconds
+            </p>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-8">
+            <!-- Screenshot 1 -->
+            <div
+              class="bg-white border rounded-3xl overflow-hidden shadow-sm content-center"
+            >
+              <img
+                src="screenshot-upload.png"
+                alt="Upload Screen"
+                class="w-11/12 mx-auto mt-6"
+              />
+              <div class="p-6">
+                <h4 class="font-semibold">1. Upload Invoices</h4>
+                <p class="text-gray-600 text-sm">
+                  Drag &amp; drop or select multiple PDFs. AI extracts data
+                  instantly.
+                </p>
+              </div>
+            </div>
+
+            <!-- Screenshot 2 -->
+            <div
+              class="bg-white border rounded-3xl overflow-hidden shadow-sm content-center"
+            >
+              <img
+                src="screenshot-results.png"
+                alt="Results Screen"
+                class="w-11/12 mx-auto mt-6"
+              />
+              <div class="p-6">
+                <h4 class="font-semibold">2. Instant Decision</h4>
+                <p class="text-gray-600 text-sm">
+                  Truth Engine™ analyses risk and gives you a clear cash offer.
+                </p>
+              </div>
+            </div>
+
+            <!-- Screenshot 3 -->
+            <div
+              class="bg-white border rounded-3xl overflow-hidden shadow-sm content-center"
+            >
+              <img
+                src="screenshot-dashboard.png"
+                alt="Dashboard"
+                class="w-11/12 mx-auto mt-6"
+              />
+              <div class="p-6">
+                <h4 class="font-semibold">3. Track Everything</h4>
+                <p class="text-gray-600 text-sm">
+                  See all your funded invoices and cash flow in one clean
+                  dashboard.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </section>
 
     <!-- VALUE PROPOSITION -->
     <section class="py-20 bg-white" id="for-smes">
-        <div class="max-w-screen-2xl mx-auto px-8">
-            <h2 class="heading-font text-5xl font-semibold tracking-tighter text-center text-[#0a2540]">Who wins?</h2>
-            
-            <div class="grid md:grid-cols-3 gap-10 mt-16">
-                <!-- SME Card -->
-                <div class="border border-gray-100 rounded-3xl p-10 bg-white">
-                    <div class="flex justify-between items-start mb-6">
-                        <div class="text-4xl">🏪</div>   <!-- 24H building icon -->
-                    </div>
-                    <h3 class="text-3xl font-semibold">For SMEs &amp; Contractors</h3>
-                    <ul class="mt-8 space-y-6 text-lg list-none">
-                        <li class="flex gap-x-4 items-start">
-                            <div class="w-2.5 h-2.5 rounded-full bg-[#00d4c8] mt-1.5 flex-shrink-0"></div>
-                            Cash in 24 hours instead of 90
-                        </li>
-                        <li class="flex gap-x-4 items-start">
-                            <div class="w-2.5 h-2.5 rounded-full bg-[#00d4c8] mt-1.5 flex-shrink-0"></div>
-                            Zero paperwork or credit checks on you
-                        </li>
-                        <li class="flex gap-x-4 items-start">
-                            <div class="w-2.5 h-2.5 rounded-full bg-[#00d4c8] mt-1.5 flex-shrink-0"></div>
-                            Reinvest immediately and grow faster
-                        </li>
-                    </ul>
-                </div>
+      <div class="max-w-screen-2xl mx-auto px-8">
+        <h2
+          class="heading-font text-5xl font-semibold tracking-tighter text-center text-[#0a2540]"
+        >
+          Who wins?
+        </h2>
 
-                <!-- Bank Card -->
-                <div class="border border-gray-100 rounded-3xl p-10 bg-white">
-                    <div class="flex justify-between items-start mb-6">
-                        <div class="text-4xl">🏦</div>   <!-- Bank icon -->
-                    </div>
-                    <h3 class="text-3xl font-semibold">For Banks</h3>
-                    <ul class="mt-8 space-y-6 text-lg list-none">
-                        <li class="flex gap-x-4 items-start">
-                            <div class="w-2.5 h-2.5 rounded-full bg-[#00d4c8] mt-1.5 flex-shrink-0"></div>
-                            Access massive SME market without manual work
-                        </li>
-                        <li class="flex gap-x-4 items-start">
-                            <div class="w-2.5 h-2.5 rounded-full bg-[#00d4c8] mt-1.5 flex-shrink-0"></div>
-                            One high-quality contract instead of 50,000 small ones
-                        </li>
-                        <li class="flex gap-x-4 items-start">
-                            <div class="w-2.5 h-2.5 rounded-full bg-[#00d4c8] mt-1.5 flex-shrink-0"></div>
-                            AI-verified, low-risk bundles
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- CashFlowNow Card (highlighted) -->
-                <div class="border border-[#00d4c8] bg-[#00d4c8]/5 rounded-3xl p-10">
-                    <div class="flex justify-between items-start mb-6">
-                        <div class="text-4xl">🚀</div>   <!-- Rocket icon -->
-                    </div>
-                    <h3 class="text-3xl font-semibold">For CashFlowNow</h3>
-                    <p class="mt-8 text-lg">
-                        We capture the arbitrage: small fee per invoice at massive scale = high-margin, automated financial utility.
-                    </p>
-                </div>
+        <div class="grid md:grid-cols-3 gap-10 mt-16">
+          <!-- SME Card -->
+          <div class="border border-gray-100 rounded-3xl p-10 bg-white">
+            <div class="flex justify-between items-start mb-6">
+              <div class="text-4xl">🏪</div>
+              <!-- 24H building icon -->
             </div>
+            <h3 class="text-3xl font-semibold">For SMEs &amp; Contractors</h3>
+            <ul class="mt-8 space-y-6 text-lg list-none">
+              <li class="flex gap-x-4 items-start">
+                <div
+                  class="w-2.5 h-2.5 rounded-full bg-[#00d4c8] mt-1.5 flex-shrink-0"
+                ></div>
+                Cash in 24 hours instead of 90
+              </li>
+              <li class="flex gap-x-4 items-start">
+                <div
+                  class="w-2.5 h-2.5 rounded-full bg-[#00d4c8] mt-1.5 flex-shrink-0"
+                ></div>
+                Zero paperwork or credit checks on you
+              </li>
+              <li class="flex gap-x-4 items-start">
+                <div
+                  class="w-2.5 h-2.5 rounded-full bg-[#00d4c8] mt-1.5 flex-shrink-0"
+                ></div>
+                Reinvest immediately and grow faster
+              </li>
+            </ul>
+          </div>
+
+          <!-- Bank Card -->
+          <div class="border border-gray-100 rounded-3xl p-10 bg-white">
+            <div class="flex justify-between items-start mb-6">
+              <div class="text-4xl">🏦</div>
+              <!-- Bank icon -->
+            </div>
+            <h3 class="text-3xl font-semibold">For Banks</h3>
+            <ul class="mt-8 space-y-6 text-lg list-none">
+              <li class="flex gap-x-4 items-start">
+                <div
+                  class="w-2.5 h-2.5 rounded-full bg-[#00d4c8] mt-1.5 flex-shrink-0"
+                ></div>
+                Access massive SME market without manual work
+              </li>
+              <li class="flex gap-x-4 items-start">
+                <div
+                  class="w-2.5 h-2.5 rounded-full bg-[#00d4c8] mt-1.5 flex-shrink-0"
+                ></div>
+                One high-quality contract instead of 50,000 small ones
+              </li>
+              <li class="flex gap-x-4 items-start">
+                <div
+                  class="w-2.5 h-2.5 rounded-full bg-[#00d4c8] mt-1.5 flex-shrink-0"
+                ></div>
+                AI-verified, low-risk bundles
+              </li>
+            </ul>
+          </div>
+
+          <!-- CashFlowNow Card (highlighted) -->
+          <div class="border border-[#00d4c8] bg-[#00d4c8]/5 rounded-3xl p-10">
+            <div class="flex justify-between items-start mb-6">
+              <div class="text-4xl">🚀</div>
+            </div>
+            <h3 class="text-3xl font-semibold">For CashFlowNow</h3>
+            <p class="mt-8 text-lg">
+              We capture the arbitrage: small fee per invoice at massive scale =
+              high-margin, automated financial utility.
+            </p>
+          </div>
         </div>
+
+        <div class="mt-16">
+          <h3 class="text-2xl font-semibold text-center mb-8">
+            What UK businesses are saying
+          </h3>
+          <div class="grid md:grid-cols-3 gap-8">
+            <!-- Testimonial 1 -->
+            <div class="bg-white border border-gray-100 p-8 rounded-3xl">
+              <p class="italic text-lg">
+                "Got my first invoice funded in under 4 minutes. Cash in my
+                account same day. Game changer for my scaffolding business."
+              </p>
+              <div class="mt-6 flex items-center gap-4">
+                <img
+                  src="neil-headshot.png"
+                  alt="Neil McPherson"
+                  class="w-14 h-14 rounded-2xl object-cover flex-shrink-0"
+                />
+                <div>
+                  <p class="font-semibold">Neil McPherson</p>
+                  <p class="text-sm text-gray-500">
+                    Owner, Aberdeen Scaffolding Ltd
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Testimonial 2 -->
+            <div class="bg-white border border-gray-100 p-8 rounded-3xl">
+              <p class="italic text-lg">
+                "Finally, a tool that actually understands small invoices. No
+                more waiting 60 days for clients to pay. Cash flow is stable
+                now."
+              </p>
+              <div class="mt-6 flex items-center gap-4">
+                <img
+                  src="sarah-headshot.png"
+                  alt="Sarah Thompson"
+                  class="w-14 h-14 rounded-2xl object-cover flex-shrink-0"
+                />
+                <div>
+                  <p class="font-semibold">Sarah Thompson</p>
+                  <p class="text-sm text-gray-500">
+                    Freelance Energy Consultant
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Testimonial 3 -->
+            <div class="bg-white border border-gray-100 p-8 rounded-3xl">
+              <p class="italic text-lg">
+                "The AI decision was shockingly fast and accurate. Sold three
+                invoices in one go and got paid the same afternoon."
+              </p>
+              <div class="mt-6 flex items-center gap-4">
+                <img
+                  src="james-headshot.png"
+                  alt="James Patel"
+                  class="w-14 h-14 rounded-2xl object-cover flex-shrink-0"
+                />
+                <div>
+                  <p class="font-semibold">James Patel</p>
+                  <p class="text-sm text-gray-500">
+                    Director, Patel Manufacturing Ltd
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- COMPETITIVE MOAT -->
     <section id="moat" class="py-20 bg-[#0a2540] text-white">
-        <div class="max-w-screen-2xl mx-auto px-8">
-            <div class="grid md:grid-cols-2 gap-16">
+      <div class="max-w-screen-2xl mx-auto px-8">
+        <div class="grid md:grid-cols-2 gap-16">
+          <div>
+            <span class="text-[#00d4c8]">OUR MOAT</span>
+            <h2
+              class="heading-font text-5xl font-semibold tracking-tighter mt-4"
+            >
+              Why no one else can do this in the UK at scale.
+            </h2>
+            <ul class="mt-10 space-y-8">
+              <li class="flex gap-x-6">
+                <div class="text-4xl text-[#00d4c8]">🤖</div>
                 <div>
-                    <span class="text-[#00d4c8]">OUR MOAT</span>
-                    <h2 class="heading-font text-5xl font-semibold tracking-tighter mt-4">Why no one else can do this in the UK at scale.</h2>
-                    <ul class="mt-10 space-y-8">
-                        <li class="flex gap-x-6">
-                            <div class="text-4xl text-[#00d4c8]">🤖</div>
-                            <div>
-                                <p class="font-semibold text-xl">Agentic AI Risk Engine</p>
-                                <p class="text-white/80">GPS, emails, shipping logs + Peppol → fraud &amp; credit risk detected faster than any human underwriter.</p>
-                            </div>
-                        </li>
-                        <li class="flex gap-x-6">
-                            <div class="text-4xl text-[#00d4c8]">🇬🇧</div>
-                            <div>
-                                <p class="font-semibold text-xl">UK-First Specialisation</p>
-                                <p class="text-white/80">No other factoring company in the UK is built purely around micro-invoices with deep AI verification.</p>
-                            </div>
-                        </li>
-                        <li class="flex gap-x-6">
-                            <div class="text-4xl text-[#00d4c8]">🔗</div>
-                            <div>
-                                <p class="font-semibold text-xl">Direct Ledger Integration + Truth Engine</p>
-                                <p class="text-white/80">We accept more of the invoice market because our verification is simply better and cheaper.</p>
-                            </div>
-                        </li>
-                    </ul>
+                  <p class="font-semibold text-xl">Agentic AI Risk Engine</p>
+                  <p class="text-white/80">
+                    GPS, emails, shipping logs + Peppol → fraud &amp; credit
+                    risk detected faster than any human underwriter.
+                  </p>
                 </div>
-                <div class="bg-white/10 backdrop-blur rounded-3xl p-10 flex flex-col justify-center">
-                    <p class="text-3xl leading-tight">"We are building THE company UK contractors come to when they want instant cash for their invoices."</p>
-                    <div class="mt-auto pt-12 text-sm opacity-75">— CashFlowNow Team</div>
+              </li>
+              <li class="flex gap-x-6">
+                <div class="text-4xl text-[#00d4c8]">🇬🇧</div>
+                <div>
+                  <p class="font-semibold text-xl">UK-First Specialisation</p>
+                  <p class="text-white/80">
+                    No other factoring company in the UK is built purely around
+                    micro-invoices with deep AI verification.
+                  </p>
                 </div>
+              </li>
+              <li class="flex gap-x-6">
+                <div class="text-4xl text-[#00d4c8]">🔗</div>
+                <div>
+                  <p class="font-semibold text-xl">
+                    Direct Ledger Integration + Truth Engine
+                  </p>
+                  <p class="text-white/80">
+                    We accept more of the invoice market because our
+                    verification is simply better and cheaper.
+                  </p>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div
+            class="bg-white/10 backdrop-blur rounded-3xl p-10 flex flex-col justify-center"
+          >
+            <p class="text-3xl leading-tight">
+              "We are building THE company UK contractors come to when they want
+              instant cash for their invoices."
+            </p>
+            <div class="mt-auto pt-12 text-sm opacity-75">
+              — CashFlowNow Team
             </div>
+          </div>
         </div>
+      </div>
     </section>
 
     <!-- CTA / GET STARTED -->
-    <section id="get-started" class="py-24 bg-gradient-to-r from-[#00d4c8] to-[#00b8ae] text-[#0a2540]">
-        <div class="max-w-screen-2xl mx-auto px-8 text-center">
-            <h2 class="heading-font text-6xl font-semibold tracking-tighter">Ready to turn your invoices into instant cash?</h2>
-            <p class="text-2xl mt-6 max-w-xl mx-auto">Connect your accounting software in 60 seconds. First invoice funded in minutes.</p>
-            
-            <div class="mt-12 flex flex-col sm:flex-row gap-6 justify-center items-center">
-                <a href="https://cash-flow-now-ten.vercel.app" 
-                class="px-12 py-6 bg-white text-[#0a2540] font-semibold text-2xl rounded-3xl flex items-center gap-x-4 hover:scale-105 transition-transform inline-block">
-                    🚀 Connect your ledger now
-                </a>
-                
-                <div class="text-sm font-medium">or email us at <a href="mailto:hello@CashFlowNow.co.uk" class="underline">hello@CashFlowNow.co.uk</a></div>
-            </div>
+    <section
+      id="get-started"
+      class="py-24 bg-gradient-to-r from-[#00d4c8] to-[#00b8ae] text-[#0a2540]"
+    >
+      <div class="max-w-screen-2xl mx-auto px-8 text-center">
+        <h2 class="heading-font text-6xl font-semibold tracking-tighter">
+          Ready to turn your invoices into instant cash?
+        </h2>
+        <p class="text-2xl mt-6 max-w-xl mx-auto">
+          Connect your accounting software in 60 seconds. First invoice funded
+          in minutes.
+        </p>
+
+        <div
+          class="mt-12 flex flex-col sm:flex-row gap-6 justify-center items-center"
+        >
+          <a
+            href="https://cash-flow-now-ten.vercel.app"
+            class="px-12 py-6 bg-white text-[#0a2540] font-semibold text-2xl rounded-3xl items-center gap-x-4 hover:scale-105 transition-transform inline-block"
+          >
+            🚀 Connect your ledger now
+          </a>
+
+          <div class="text-sm font-medium">
+            or email us at
+            <a href="mailto:hello@CashFlowNow.co.uk" class="underline"
+              >hello@CashFlowNow.co.uk</a
+            >
+          </div>
         </div>
+      </div>
     </section>
 
     <!-- FOOTER -->
     <footer class="bg-[#0a2540] text-white/80 py-16">
-        <div class="max-w-screen-2xl mx-auto px-8 grid md:grid-cols-4 gap-8">
-            <div>
-                <div class="flex items-center gap-x-3 text-white">
-                    <img src="LogoNoBG.png" alt="CashFlowNow Logo" class="h-9 w-auto">
-                    <span class="heading-font text-3xl font-semibold">CashFlowNow</span>
-                </div>
-                <p class="mt-6 text-sm">UK's smartest invoice finance platform.<br>AI + bank capital = instant cashflow.</p>
-                <p class="text-xs mt-8">© 2026 CashFlowNow Ltd.</p>
-            </div>
-            <div>
-                <p class="font-semibold mb-4">Product</p>
-                <ul class="space-y-2 text-sm">
-                    <li>How it works</li>
-                    <li>Pricing (transparent spread)</li>
-                    <li>Integrations</li>
-                    <li>Security &amp; AI</li>
-                </ul>
-            </div>
-            <div>
-                <p class="font-semibold mb-4">Company</p>
-                <ul class="space-y-2 text-sm">
-                    <li>About the Truth Engine</li>
-                    <li>UK focus</li>
-                    <li>Blog</li>
-                    <li>Contact</li>
-                </ul>
-            </div>
+      <div class="max-w-screen-2xl mx-auto px-8 grid md:grid-cols-4 gap-8">
+        <div>
+          <div class="flex items-center gap-x-3 text-white">
+            <img src="LogoNoBG.png" alt="CashFlowNow Logo" class="h-9 w-auto" />
+            <span class="heading-font text-3xl font-semibold">CashFlowNow</span>
+          </div>
+          <p class="mt-6 text-sm">
+            UK's smartest invoice finance platform.<br />AI + bank capital =
+            instant cashflow.
+          </p>
+          <p class="text-xs mt-8">© 2026 CashFlowNow Ltd.</p>
         </div>
+        <div>
+          <p class="font-semibold mb-4">Product</p>
+          <ul class="space-y-2 text-sm">
+            <li>How it works</li>
+            <li>Pricing (transparent spread)</li>
+            <li>Integrations</li>
+            <li>Security &amp; AI</li>
+          </ul>
+        </div>
+        <div>
+          <p class="font-semibold mb-4">Company</p>
+          <ul class="space-y-2 text-sm">
+            <li>About the Truth Engine</li>
+            <li>UK focus</li>
+            <li>Blog</li>
+            <li>Contact</li>
+          </ul>
+        </div>
+      </div>
     </footer>
 
     <script>
-        function initializeTailwind() {
-            console.log('%c✅ CashFlowNow landing page ready for deployment!', 'color:#00d4c8; font-size:13px; font-weight:bold');
-        }
-        window.onload = initializeTailwind;
+      function initializeTailwind() {
+        console.log(
+          "%cCashFlowNow landing page ready for deployment",
+          "color:#00d4c8; font-size:13px; font-weight:bold",
+        );
+      }
+      window.onload = initializeTailwind;
     </script>
-</body>
+  </body>
 </html>
