@@ -147,25 +147,7 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
 
           {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
 
-          <div className="mt-8 text-center">
-            <button
-              onClick={() =>
-                onLoginSuccess({
-                  id: 0,
-                  full_name: "Demo User",
-                  email: "demo@cashflownow.local",
-                })
-              }
-              className="text-[#00d4c8] hover:underline text-sm font-medium"
-            >
-              Demo Login (skip for presentation)
-            </button>
-          </div>
         </div>
-
-        <p className="text-center text-gray-500 text-sm mt-6">
-          Your data is stored in the backend for this MVP.
-        </p>
       </div>
     </div>
   );

@@ -52,3 +52,12 @@ export interface InvoiceDecisionResponse {
   decision_reasons: string[];
   offer: OfferDetails | null;
 }
+
+export interface ProcessedInvoiceResult extends InvoiceDecisionResponse {
+  processing_time_ms: number;
+}
+
+export interface InvoiceHistoryRecord extends ProcessedInvoiceResult {
+  history_id: string;
+  processed_at: string;
+}

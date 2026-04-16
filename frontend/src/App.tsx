@@ -6,17 +6,31 @@ import UploadScreen from "./components/UploadScreen";
 import ResultsScreen from "./components/ResultsScreen";
 import HistoryScreen from "./components/HistoryScreen";
 import AuthScreen from "./components/AuthScreen";
+import {
+  appendInvoiceHistory,
+  computeDashboardMetrics,
+  loadInvoiceHistory,
+} from "./lib/invoiceHistory";
 import type { AuthUser } from "./types/auth";
-import type { InvoiceDecisionResponse } from "./types/invoice";
+import type { InvoiceHistoryRecord } from "./types/invoice";
 
 const AUTH_STORAGE_KEY = "cashflownow-auth-user";
+type Screen = "home" | "upload" | "results" | "history";
+
+function getRequestedScreen(): Screen {
+  const params = new URLSearchParams(window.location.search);
+  const screen = params.get("screen");
+  if (screen === "home" || screen === "upload" || screen === "results" || screen === "history") {
+    return screen;
+  }
+  return "home";
+}
 
 function App() {
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
-  const [currentScreen, setCurrentScreen] = useState<
-    "home" | "upload" | "results" | "history"
-  >("home");
-  const [results, setResults] = useState<InvoiceDecisionResponse[]>([]);
+  const [currentScreen, setCurrentScreen] = useState<Screen>(getRequestedScreen);
+  const [results, setResults] = useState<InvoiceHistoryRecord[]>([]);
+  const [history, setHistory] = useState<InvoiceHistoryRecord[]>([]);
 
   useEffect(() => {
     const storedUser = window.localStorage.getItem(AUTH_STORAGE_KEY);
@@ -36,16 +50,28 @@ function App() {
     window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
   };
 
+  useEffect(() => {
+    if (!currentUser) {
+      setHistory([]);
+      return;
+    }
+
+    setHistory(loadInvoiceHistory(currentUser));
+  }, [currentUser]);
+
   const handleLogout = () => {
     setCurrentUser(null);
     setCurrentScreen("home");
     setResults([]);
+    setHistory([]);
     window.localStorage.removeItem(AUTH_STORAGE_KEY);
   };
 
   if (!currentUser) {
     return <AuthScreen onLoginSuccess={handleLoginSuccess} />;
   }
+
+  const metrics = computeDashboardMetrics(history);
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden font-sans">
@@ -60,12 +86,17 @@ function App() {
 
         <main className="flex-1 overflow-auto p-8 bg-white">
           {currentScreen === "home" && (
-            <DashboardHome onUploadClick={() => setCurrentScreen("upload")} />
+            <DashboardHome
+              onUploadClick={() => setCurrentScreen("upload")}
+              metrics={metrics}
+            />
           )}
           {currentScreen === "upload" && (
             <UploadScreen
               onResultsReady={(invoiceResults) => {
-                setResults(invoiceResults);
+                const savedHistory = appendInvoiceHistory(currentUser, invoiceResults);
+                setHistory(savedHistory);
+                setResults(savedHistory.slice(0, invoiceResults.length));
                 setCurrentScreen("results");
               }}
             />
@@ -77,7 +108,7 @@ function App() {
               onUploadMore={() => setCurrentScreen("upload")}
             />
           )}
-          {currentScreen === "history" && <HistoryScreen />}
+          {currentScreen === "history" && <HistoryScreen history={history} metrics={metrics} />}
         </main>
       </div>
     </div>

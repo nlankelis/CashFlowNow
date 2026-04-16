@@ -1,60 +1,62 @@
 import { Upload, TrendingUp, Clock, Award } from "lucide-react";
+import type { DashboardMetrics } from "../lib/invoiceHistory";
 
 interface DashboardHomeProps {
   onUploadClick: () => void;
+  metrics: DashboardMetrics;
 }
 
-export default function DashboardHome({ onUploadClick }: DashboardHomeProps) {
+const currency = new Intl.NumberFormat("en-GB", {
+  style: "currency",
+  currency: "GBP",
+  maximumFractionDigits: 0,
+});
+
+export default function DashboardHome({ onUploadClick, metrics }: DashboardHomeProps) {
   return (
     <div>
       <div className="mb-10">
         <h1 className="heading-font text-5xl font-semibold tracking-tighter text-[#0a2540] mb-2">
-          Good morning, Alex 👋
+          Welcome back
         </h1>
-        <p className="text-gray-600 text-xl">
-          Here’s what’s happening with your cash flow today.
-        </p>
+        <p className="text-gray-600 text-xl">Here is what is happening with your cash flow today.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-        {/* Card 1 */}
         <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
             <div className="text-gray-500 text-sm font-medium">TOTAL ADVANCED</div>
             <TrendingUp className="text-[#00d4c8]" size={24} />
           </div>
-          <div className="text-4xl font-bold text-[#0a2540] mb-1">£24,850</div>
-          <div className="text-emerald-600 text-sm font-medium">+£8,200 this week</div>
+          <div className="text-4xl font-bold text-[#0a2540] mb-1">{currency.format(metrics.totalAdvanced)}</div>
+          <div className="text-emerald-600 text-sm font-medium">Approved invoice advances to date</div>
         </div>
 
-        {/* Card 2 */}
         <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
             <div className="text-gray-500 text-sm font-medium">PENDING INVOICES</div>
             <Clock className="text-amber-500" size={24} />
           </div>
-          <div className="text-4xl font-bold text-[#0a2540] mb-1">12</div>
-          <div className="text-amber-600 text-sm font-medium">Worth £31,450</div>
+          <div className="text-4xl font-bold text-[#0a2540] mb-1">{metrics.pendingInvoices}</div>
+          <div className="text-amber-600 text-sm font-medium">Awaiting manual review</div>
         </div>
 
-        {/* Card 3 */}
         <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
             <div className="text-gray-500 text-sm font-medium">AVG APPROVAL TIME</div>
             <Award className="text-[#00d4c8]" size={24} />
           </div>
-          <div className="text-4xl font-bold text-[#0a2540] mb-1">18s</div>
-          <div className="text-[#00d4c8] text-sm font-medium">Truth Engine™ powered</div>
+          <div className="text-4xl font-bold text-[#0a2540] mb-1">{metrics.avgApprovalTimeSeconds.toFixed(1)}s</div>
+          <div className="text-[#00d4c8] text-sm font-medium">Truth Engine powered</div>
         </div>
 
-        {/* Card 4 */}
         <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
             <div className="text-gray-500 text-sm font-medium">THIS MONTH SAVED</div>
             <TrendingUp className="text-[#00d4c8]" size={24} />
           </div>
-          <div className="text-4xl font-bold text-[#0a2540] mb-1">£1,340</div>
-          <div className="text-emerald-600 text-sm font-medium">vs traditional banks</div>
+          <div className="text-4xl font-bold text-[#0a2540] mb-1">{currency.format(metrics.thisMonthSavings)}</div>
+          <div className="text-emerald-600 text-sm font-medium">vs traditional banks in the last 30 days</div>
         </div>
       </div>
 

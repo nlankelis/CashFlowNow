@@ -9,7 +9,7 @@ from collections import Counter, deque
 from datetime import date, datetime
 from typing import Literal
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -151,10 +151,20 @@ class AuthResponse(BaseModel):
     user: AuthUserResponse
 
 
+class SupplementalInvoiceFields(BaseModel):
+    invoice_number: str | None = None
+    amount: float | None = None
+    due_date: date | None = None
+    debtor_name: str | None = None
+    debtor_email: str | None = None
+    debtor_phone: str | None = None
+
+
 def parse_pdf_text(file_content: bytes) -> str:
     chunks = []
     chunks.extend(_extract_pdf_operator_text(file_content))
     chunks.extend(_extract_struct_tag_text(file_content))
+    chunks.extend(_extract_hex_glyph_text(file_content))
 
     # Extract compressed streams (common in production-generated invoices).
     for stream in re.findall(rb"stream\r?\n(.*?)\r?\nendstream", file_content, flags=re.DOTALL):
@@ -162,6 +172,7 @@ def parse_pdf_text(file_content: bytes) -> str:
             try:
                 inflated = zlib.decompress(stream, wbits)
                 chunks.extend(_extract_pdf_operator_text(inflated))
+                chunks.extend(_extract_hex_glyph_text(inflated))
                 break
             except zlib.error:
                 continue
@@ -170,7 +181,18 @@ def parse_pdf_text(file_content: bytes) -> str:
         decoded = file_content.decode("latin-1", errors="ignore")
         chunks = re.findall(r"[A-Za-z0-9@#£$€:./_,\-]{3,}", decoded)
 
-    text = "\n".join(_clean_pdf_string(chunk) for chunk in chunks if chunk.strip())
+    cleaned_chunks = []
+    for chunk in chunks:
+        normalized = _clean_pdf_string(chunk)
+        if not normalized:
+            continue
+        if re.fullmatch(r"(?:<[0-9A-Fa-f]+>\s*)+", normalized):
+            continue
+        if normalized.startswith("<") and normalized.count("<") >= 2:
+            continue
+        cleaned_chunks.append(normalized)
+
+    text = "\n".join(cleaned_chunks)
     return text.strip()
 
 
@@ -188,6 +210,60 @@ def _extract_struct_tag_text(raw: bytes) -> list[str]:
     tags.extend(re.findall(r"/T\s*\((.*?)\)", decoded, flags=re.DOTALL))
     tags.extend(re.findall(r"/E\s*\((.*?)\)", decoded, flags=re.DOTALL))
     return tags
+
+
+def _extract_hex_glyph_text(raw: bytes) -> list[str]:
+    decoded = raw.decode("latin-1", errors="ignore")
+    candidates = re.findall(r"(?:(?:<[0-9A-Fa-f]+>)(?:-?\d+(?:\.\d+)?)*){2,}", decoded)
+    extracted: list[str] = []
+    seen: set[str] = set()
+
+    for candidate in candidates:
+        glyphs: list[str] = []
+        for token in re.findall(r"<([0-9A-Fa-f]+)>", candidate):
+            if len(token) < 4 or len(token) % 4 != 0:
+                continue
+
+            for idx in range(0, len(token), 4):
+                try:
+                    code_point = int(token[idx : idx + 4], 16)
+                except ValueError:
+                    continue
+
+                decoded_char = _decode_pdf_hex_codepoint(code_point)
+                if decoded_char:
+                    glyphs.append(decoded_char)
+
+        line = "".join(glyphs)
+        line = re.sub(r"\s+", " ", line).strip()
+        if not line or line in seen:
+            continue
+        if not re.search(r"[A-Za-z0-9]", line):
+            continue
+        if len(re.findall(r"[A-Za-z0-9]", line)) < 3:
+            continue
+
+        seen.add(line)
+        extracted.append(line)
+
+    return extracted
+
+
+def _decode_pdf_hex_codepoint(code_point: int) -> str:
+    if 0x0003 <= code_point <= 0x001D:
+        translated = code_point + 29
+        return chr(translated) if 32 <= translated <= 126 else ""
+
+    if 0x0020 <= code_point <= 0x007E:
+        translated = code_point - 3
+        return chr(translated) if 32 <= translated <= 126 else ""
+
+    return ""
+
+
+def _looks_like_receipt_document(text: str) -> bool:
+    lowered = text.lower()
+    return any(marker in lowered for marker in ("receipt", "2eceipt", "merchant", "-erchant", "status", "3tatus"))
 
 
 def _clean_pdf_string(value: str) -> str:
@@ -238,22 +314,33 @@ def parse_amount(text: str) -> float | None:
         "total payable",
         "amount payable",
         "payment due",
+        "total amount",
     )
-    weak_amount_labels = ("amount", "total", "balance", "payable")
+    weak_amount_labels = ("amount", "total", "balance", "payable", "gbp")
     negative_labels = ("vat", "tax", "subtotal", "sub total", "discount", "qty", "quantity")
 
     scored: list[tuple[int, float]] = []
-    for line in lines:
+    for idx, line in enumerate(lines):
         amount = _extract_money_value(line)
         if amount is None:
             continue
 
         lowered = line.lower()
+        prev_line = lines[idx - 1].lower() if idx > 0 else ""
+        next_line = lines[idx + 1].lower() if idx + 1 < len(lines) else ""
         score = 0
         if any(label in lowered for label in strong_amount_labels):
             score += 100
         elif any(label in lowered for label in weak_amount_labels):
             score += 50
+        if any(label in prev_line for label in strong_amount_labels):
+            score += 90
+        elif any(label in prev_line for label in weak_amount_labels):
+            score += 45
+        if any(label in next_line for label in strong_amount_labels):
+            score += 40
+        elif any(label in next_line for label in weak_amount_labels):
+            score += 20
         if any(label in lowered for label in negative_labels):
             score -= 30
         if any(symbol in line for symbol in ("£", "$", "€", "GBP", "USD", "EUR")):
@@ -318,7 +405,12 @@ def parse_due_date(text: str) -> date | None:
 
     if candidates:
         candidates.sort(key=lambda item: item[0], reverse=True)
+        if _looks_like_receipt_document(text) and candidates[0][0] < 100:
+            return None
         return candidates[0][1]
+
+    if _looks_like_receipt_document(text):
+        return None
 
     all_dates = _extract_dates_from_text(text)
     return all_dates[0] if all_dates else None
@@ -411,6 +503,9 @@ def parse_debtor_name(text: str) -> str | None:
                 if _is_valid_party_name(candidate):
                     return candidate
 
+    if _looks_like_receipt_document(text):
+        return None
+
     # Fallback: choose first likely name-ish line if label method fails.
     for line in lines:
         if _is_valid_party_name(line):
@@ -466,7 +561,11 @@ def _is_valid_party_name(value: str) -> bool:
         return False
     if "@" in cleaned:
         return False
+    if len(cleaned.split()) > 6:
+        return False
     if re.search(r"\b(invoice|bill|sold|customer|debtor|total|amount|due|date|vat|tax)\b", cleaned, flags=re.IGNORECASE):
+        return False
+    if re.search(r"\b(receipt|support|transaction|reference|message|automated|merchant|status|card)\b", cleaned, flags=re.IGNORECASE):
         return False
     if re.search(r"\d{3,}", cleaned):
         return False
@@ -497,6 +596,30 @@ def parse_phone(text: str) -> str | None:
     candidate = re.sub(r"\s+", " ", match.group(1)).strip()
     digits_only = re.sub(r"\D", "", candidate)
     return candidate if len(digits_only) >= 8 else None
+
+
+def parse_amount_input(value: str | None) -> float | None:
+    if value is None:
+        return None
+    cleaned = re.sub(r"[^0-9.]", "", value)
+    if not cleaned:
+        return None
+    try:
+        return float(cleaned)
+    except ValueError:
+        return None
+
+
+def parse_due_date_input(value: str | None) -> date | None:
+    if not value:
+        return None
+    value = value.strip()
+    for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%d-%m-%Y", "%d/%m/%y", "%d-%m-%y"):
+        try:
+            return datetime.strptime(value, fmt).date()
+        except ValueError:
+            continue
+    return None
 
 
 def build_layout_signature(text: str) -> str:
@@ -594,7 +717,11 @@ def calculate_offer(
     )
 
 
-def analyze_invoice(file_name: str, file_content: bytes) -> InvoiceDecisionResponse:
+def analyze_invoice(
+    file_name: str,
+    file_content: bytes,
+    supplemental: SupplementalInvoiceFields | None = None,
+) -> InvoiceDecisionResponse:
     if len(file_content) > MAX_PDF_SIZE_BYTES:
         raise HTTPException(status_code=400, detail="PDF too large. Max size is 10MB.")
 
@@ -612,6 +739,14 @@ def analyze_invoice(file_name: str, file_content: bytes) -> InvoiceDecisionRespo
     debtor_name = parse_debtor_name(raw_text)
     debtor_email = parse_email(raw_text)
     debtor_phone = parse_phone(raw_text)
+
+    if supplemental:
+        invoice_number = invoice_number or supplemental.invoice_number
+        amount = amount if amount is not None else supplemental.amount
+        due_dt = due_dt or supplemental.due_date
+        debtor_name = debtor_name or supplemental.debtor_name
+        debtor_email = debtor_email or supplemental.debtor_email
+        debtor_phone = debtor_phone or supplemental.debtor_phone
 
     missing_fields = []
     if not invoice_number:
@@ -788,10 +923,30 @@ def login_user(payload: LoginRequest) -> AuthResponse:
 
 
 @app.post("/process-invoice", response_model=InvoiceDecisionResponse)
-async def process_invoice(file: UploadFile = File(...)) -> InvoiceDecisionResponse:
+async def process_invoice(
+    file: UploadFile = File(...),
+    invoice_number: str | None = Form(default=None),
+    amount: str | None = Form(default=None),
+    due_date: str | None = Form(default=None),
+    debtor_name: str | None = Form(default=None),
+    debtor_email: str | None = Form(default=None),
+    debtor_phone: str | None = Form(default=None),
+) -> InvoiceDecisionResponse:
     allowed_types = {"application/pdf"}
     if file.content_type not in allowed_types:
         raise HTTPException(status_code=400, detail="Invalid file type. Please upload a PDF file.")
 
     file_content = await file.read()
-    return analyze_invoice(file_name=file.filename or "invoice.pdf", file_content=file_content)
+    supplemental = SupplementalInvoiceFields(
+        invoice_number=invoice_number.strip() if invoice_number and invoice_number.strip() else None,
+        amount=parse_amount_input(amount),
+        due_date=parse_due_date_input(due_date),
+        debtor_name=debtor_name.strip() if debtor_name and debtor_name.strip() else None,
+        debtor_email=debtor_email.strip() if debtor_email and debtor_email.strip() else None,
+        debtor_phone=debtor_phone.strip() if debtor_phone and debtor_phone.strip() else None,
+    )
+    return analyze_invoice(
+        file_name=file.filename or "invoice.pdf",
+        file_content=file_content,
+        supplemental=supplemental,
+    )

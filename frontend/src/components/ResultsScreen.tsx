@@ -1,8 +1,8 @@
 import { CheckCircle, AlertTriangle, ArrowRight, Upload, ShieldAlert } from "lucide-react";
-import type { InvoiceDecisionResponse } from "../types/invoice";
+import type { InvoiceHistoryRecord } from "../types/invoice";
 
 interface ResultsScreenProps {
-  results: InvoiceDecisionResponse[];
+  results: InvoiceHistoryRecord[];
   onBackToHome?: () => void;
   onUploadMore?: () => void;
 }
@@ -13,7 +13,7 @@ const currency = new Intl.NumberFormat("en-GB", {
   maximumFractionDigits: 2,
 });
 
-function decisionPill(decision: InvoiceDecisionResponse["decision"]) {
+function decisionPill(decision: InvoiceHistoryRecord["decision"]) {
   if (decision === "approved") {
     return <span className="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700">Approved</span>;
   }
@@ -36,7 +36,7 @@ export default function ResultsScreen({ results, onBackToHome, onUploadMore }: R
       <div className="mb-8">
         <div className="inline-flex items-center gap-2 bg-[#00d4c8]/10 text-[#0a2540] px-6 py-2 rounded-3xl mb-5">
           <CheckCircle size={20} />
-          <span className="font-semibold">MVP Invoice Assessment Complete</span>
+          <span className="font-semibold">Invoice Assessment Complete</span>
         </div>
         <h1 className="heading-font text-5xl font-semibold tracking-tighter text-[#0a2540] mb-2">
           Decision Summary
