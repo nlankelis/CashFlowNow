@@ -25,7 +25,13 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
         {/* Logo */}
         <div className="flex justify-center mb-8">
           <div className="flex items-center gap-x-3">
-            <div className="w-10 h-10 bg-[#ffffff] text-white rounded-2xl flex items-center justify-center text-2xl"><img src="/src/assets/LogoNoBG.png" alt="CashFlowNow" className="h-9 w-auto" /></div>
+            <div className="w-10 h-10 bg-[#ffffff] text-white rounded-2xl flex items-center justify-center text-2xl">
+                <img 
+                src="/LogoNoBG.png" 
+                alt="CashFlowNow" 
+                className="h-9 w-auto" 
+                />
+            </div>
             <span className="heading-font text-4xl font-semibold tracking-tighter text-[#0a2540]">
               CashFlowNow
             </span>
