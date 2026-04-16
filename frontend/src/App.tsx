@@ -79,7 +79,6 @@ function App() {
         currentScreen={currentScreen} 
         setCurrentScreen={setCurrentScreen}
         onLogout={handleLogout}
-        currentUser={currentUser}
       />
 
       <div className="flex-1 flex flex-col overflow-hidden">

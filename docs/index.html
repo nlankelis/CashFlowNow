@@ -58,7 +58,7 @@
             </div>
             
             <div class="flex items-center gap-x-4">
-                <a id="auth-link" href="https://cash-flow-now-ten.vercel.app"
+                <a href="https://cash-flow-now-ten.vercel.app"
                    class="px-6 py-2.5 text-sm font-semibold border border-[#0a2540] text-[#0a2540] rounded-2xl hover:bg-[#0a2540] hover:text-white transition-all">
                     Log in
                 </a>
@@ -446,16 +446,7 @@
 
     <script>
         function initializeTailwind() {
-            const params = new URLSearchParams(window.location.search);
-            const isLoggedIn = params.get('logged_in') === '1';
-            const name = params.get('name');
-            const authLink = document.getElementById('auth-link');
             const primaryCta = document.getElementById('primary-cta');
-
-            if (isLoggedIn && authLink) {
-                authLink.textContent = name ? `Logged in as ${name}` : 'Logged in';
-                authLink.setAttribute('href', 'https://cash-flow-now-ten.vercel.app/');
-            }
 
             if (primaryCta) {
                 primaryCta.setAttribute('href', 'https://cash-flow-now-ten.vercel.app/?screen=upload');

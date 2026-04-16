@@ -1,5 +1,4 @@
 import { Home, Upload, History, LogOut } from "lucide-react";
-import type { AuthUser } from "../types/auth";
 
 type Screen = "home" | "upload" | "results" | "history";
 
@@ -7,18 +6,13 @@ interface SidebarProps {
   currentScreen: Screen;
   setCurrentScreen: (screen: Screen) => void;
   onLogout: () => void;
-  currentUser: AuthUser;
 }
 
-export default function Sidebar({ currentScreen, setCurrentScreen, onLogout, currentUser }: SidebarProps) {
-  const landingUrl = new URL("https://nlankelis.github.io/CashFlowNow/");
-  landingUrl.searchParams.set("logged_in", "1");
-  landingUrl.searchParams.set("name", currentUser.full_name);
-
+export default function Sidebar({ currentScreen, setCurrentScreen, onLogout }: SidebarProps) {
   return (
     <div className="w-72 bg-white border-r border-gray-100 flex flex-col">
       <div className="p-6 border-b">
-        <a href={landingUrl.toString()} className="flex items-center gap-3">
+        <a href="https://nlankelis.github.io/CashFlowNow/" className="flex items-center gap-3">
           <img src="/LogoNoBG.png" alt="CashFlowNow" className="h-9 w-auto" />
           <span className="heading-font text-3xl font-semibold tracking-tighter text-[#0a2540]">
             CashFlowNow
