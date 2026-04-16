@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import DashboardHome from "./components/DashboardHome";
@@ -6,22 +6,42 @@ import UploadScreen from "./components/UploadScreen";
 import ResultsScreen from "./components/ResultsScreen";
 import HistoryScreen from "./components/HistoryScreen";
 import AuthScreen from "./components/AuthScreen";
+import type { AuthUser } from "./types/auth";
 import type { InvoiceDecisionResponse } from "./types/invoice";
 
+const AUTH_STORAGE_KEY = "cashflownow-auth-user";
+
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
   const [currentScreen, setCurrentScreen] = useState<"home" | "upload" | "results" | "history">("home");
   const [results, setResults] = useState<InvoiceDecisionResponse[]>([]);
 
-  const handleLoginSuccess = () => {
-    setIsAuthenticated(true);
+  useEffect(() => {
+    const storedUser = window.localStorage.getItem(AUTH_STORAGE_KEY);
+    if (!storedUser) {
+      return;
+    }
+
+    try {
+      setCurrentUser(JSON.parse(storedUser) as AuthUser);
+    } catch {
+      window.localStorage.removeItem(AUTH_STORAGE_KEY);
+    }
+  }, []);
+
+  const handleLoginSuccess = (user: AuthUser) => {
+    setCurrentUser(user);
+    window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
   };
 
   const handleLogout = () => {
-    setIsAuthenticated(false);
+    setCurrentUser(null);
+    setCurrentScreen("home");
+    setResults([]);
+    window.localStorage.removeItem(AUTH_STORAGE_KEY);
   };
 
-  if (!isAuthenticated) {
+  if (!currentUser) {
     return <AuthScreen onLoginSuccess={handleLoginSuccess} />;
   }
 
@@ -34,7 +54,7 @@ function App() {
       />
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header />
+        <Header currentUser={currentUser} onLogout={handleLogout} />
 
         <main className="flex-1 overflow-auto p-8 bg-white">
           {currentScreen === "home" && <DashboardHome onUploadClick={() => setCurrentScreen("upload")} />}
