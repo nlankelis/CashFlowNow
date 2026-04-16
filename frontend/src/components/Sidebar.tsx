@@ -1,19 +1,28 @@
 import { Home, Upload, History, LogOut } from "lucide-react";
 
-type Screen = "home" | "upload" | "results" | "history";
+type Screen = "home" | "upload" | "results" | "history";   // ← removed "auth"
 
 interface SidebarProps {
   currentScreen: Screen;
   setCurrentScreen: (screen: Screen) => void;
+  onLogout: () => void;           // ← required for logout
 }
 
-export default function Sidebar({ currentScreen, setCurrentScreen }: SidebarProps) {
+export default function Sidebar({ 
+  currentScreen, 
+  setCurrentScreen, 
+  onLogout 
+}: SidebarProps) {
   return (
     <div className="w-72 bg-white border-r border-gray-100 flex flex-col">
-      {/* Logo */}
+      {/* Logo - Correct path for Vercel */}
       <div className="p-6 border-b">
         <div className="flex items-center gap-3">
-          <img src="/src/assets/LogoNoBG.png" alt="CashFlowNow" className="h-9 w-auto" />
+          <img 
+            src="/LogoNoBG.png" 
+            alt="CashFlowNow" 
+            className="h-9 w-auto" 
+          />
           <span className="heading-font text-3xl font-semibold tracking-tighter text-[#0a2540]">
             CashFlowNow
           </span>
@@ -25,9 +34,7 @@ export default function Sidebar({ currentScreen, setCurrentScreen }: SidebarProp
         <button
           onClick={() => setCurrentScreen("home")}
           className={`w-full flex items-center gap-3 px-5 py-4 rounded-3xl text-left transition-all ${
-            currentScreen === "home"
-              ? "bg-[#00d4c8] text-[#0a2540] font-medium"
-              : "hover:bg-gray-50"
+            currentScreen === "home" ? "bg-[#00d4c8] text-[#0a2540] font-medium" : "hover:bg-gray-50"
           }`}
         >
           <Home size={22} />
@@ -37,9 +44,7 @@ export default function Sidebar({ currentScreen, setCurrentScreen }: SidebarProp
         <button
           onClick={() => setCurrentScreen("upload")}
           className={`w-full flex items-center gap-3 px-5 py-4 rounded-3xl text-left transition-all ${
-            currentScreen === "upload"
-              ? "bg-[#00d4c8] text-[#0a2540] font-medium"
-              : "hover:bg-gray-50"
+            currentScreen === "upload" ? "bg-[#00d4c8] text-[#0a2540] font-medium" : "hover:bg-gray-50"
           }`}
         >
           <Upload size={22} />
@@ -49,9 +54,7 @@ export default function Sidebar({ currentScreen, setCurrentScreen }: SidebarProp
         <button
           onClick={() => setCurrentScreen("history")}
           className={`w-full flex items-center gap-3 px-5 py-4 rounded-3xl text-left transition-all ${
-            currentScreen === "history"
-              ? "bg-[#00d4c8] text-[#0a2540] font-medium"
-              : "hover:bg-gray-50"
+            currentScreen === "history" ? "bg-[#00d4c8] text-[#0a2540] font-medium" : "hover:bg-gray-50"
           }`}
         >
           <History size={22} />
@@ -59,9 +62,12 @@ export default function Sidebar({ currentScreen, setCurrentScreen }: SidebarProp
         </button>
       </div>
 
-      {/* Sign out */}
+      {/* Sign Out - Now works */}
       <div className="p-4 border-t mt-auto">
-        <button className="w-full flex items-center gap-3 px-5 py-4 text-red-600 hover:bg-red-50 rounded-3xl transition-all">
+        <button 
+          onClick={onLogout}
+          className="w-full flex items-center gap-3 px-5 py-4 text-red-600 hover:bg-red-50 rounded-3xl transition-all"
+        >
           <LogOut size={22} />
           <span className="font-medium">Sign Out</span>
         </button>

@@ -5,7 +5,7 @@ import DashboardHome from "./components/DashboardHome";
 import UploadScreen from "./components/UploadScreen";
 import ResultsScreen from "./components/ResultsScreen";
 import HistoryScreen from "./components/HistoryScreen";
-import AuthScreen from "./components/AuthScreen";   // ← new import
+import AuthScreen from "./components/AuthScreen";
 import type { InvoiceDecisionResponse } from "./types/invoice";
 
 function App() {
@@ -17,13 +17,21 @@ function App() {
     setIsAuthenticated(true);
   };
 
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+  };
+
   if (!isAuthenticated) {
     return <AuthScreen onLoginSuccess={handleLoginSuccess} />;
   }
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden font-sans">
-      <Sidebar currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} />
+      <Sidebar 
+        currentScreen={currentScreen} 
+        setCurrentScreen={setCurrentScreen}
+        onLogout={handleLogout}
+      />
 
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
