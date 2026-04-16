@@ -58,11 +58,11 @@
             </div>
             
             <div class="flex items-center gap-x-4">
-                <a href="https://cash-flow-now-ten.vercel.app"
+                <a id="auth-link" href="https://cash-flow-now-ten.vercel.app"
                    class="px-6 py-2.5 text-sm font-semibold border border-[#0a2540] text-[#0a2540] rounded-2xl hover:bg-[#0a2540] hover:text-white transition-all">
                     Log in
                 </a>
-                <a href="#get-started" 
+                <a id="primary-cta" href="https://cash-flow-now-ten.vercel.app/?screen=upload" 
                    class="px-8 py-2.5 bg-[#00d4c8] hover:bg-[#00b8ae] text-white font-semibold rounded-2xl transition-all flex items-center gap-x-2">
                     Get Paid Today
                     <span class="text-[#2d2c9] text-xl">➔</span>
@@ -93,8 +93,8 @@
                 </p>
                 
                 <div class="flex flex-wrap gap-4">
-                    <a href="#get-started" class="px-10 py-5 bg-[#00d4c8] hover:bg-[#00b8ae] text-[#0a2540] font-semibold text-xl rounded-3xl flex items-center gap-x-3 transition-all">
-                        Connect Xero / QuickBooks / Sage
+                    <a href="https://cash-flow-now-ten.vercel.app/?screen=upload" class="px-10 py-5 bg-[#00d4c8] hover:bg-[#00b8ae] text-[#0a2540] font-semibold text-xl rounded-3xl flex items-center gap-x-3 transition-all">
+                        Upload invoices and request funding
                     </a>
                     <a href="#how" class="px-10 py-5 border-2 border-white hover:bg-white/10 text-white font-semibold text-xl rounded-3xl flex items-center gap-x-3 transition-all">
                         Watch how it works <span class="text-3xl">→</span>
@@ -402,7 +402,7 @@
             <p class="text-2xl mt-6 max-w-xl mx-auto">Connect your accounting software in 60 seconds. First invoice funded in minutes.</p>
             
             <div class="mt-12 flex flex-col sm:flex-row gap-6 justify-center items-center">
-                <a href="https://cash-flow-now-ten.vercel.app" 
+                <a href="https://cash-flow-now-ten.vercel.app/?screen=upload" 
                 class="px-12 py-6 bg-white text-[#0a2540] font-semibold text-2xl rounded-3xl flex items-center gap-x-4 hover:scale-105 transition-transform inline-block">
                     🚀 Open the live dashboard
                 </a>
@@ -429,7 +429,7 @@
                     <li><a href="#how" class="hover:text-white transition-colors">How it works</a></li>
                     <li><a href="#solution" class="hover:text-white transition-colors">Ledger integrations</a></li>
                     <li><a href="#for-smes" class="hover:text-white transition-colors">For SMEs</a></li>
-                    <li><a href="https://cash-flow-now-ten.vercel.app" class="hover:text-white transition-colors">Open dashboard</a></li>
+                    <li><a href="https://cash-flow-now-ten.vercel.app/?screen=upload" class="hover:text-white transition-colors">Open dashboard</a></li>
                 </ul>
             </div>
             <div>
@@ -446,7 +446,22 @@
 
     <script>
         function initializeTailwind() {
-            console.log('%c✅ CashFlowNow landing page ready for deployment!', 'color:#00d4c8; font-size:13px; font-weight:bold');
+            const params = new URLSearchParams(window.location.search);
+            const isLoggedIn = params.get('logged_in') === '1';
+            const name = params.get('name');
+            const authLink = document.getElementById('auth-link');
+            const primaryCta = document.getElementById('primary-cta');
+
+            if (isLoggedIn && authLink) {
+                authLink.textContent = name ? `Logged in as ${name}` : 'Logged in';
+                authLink.setAttribute('href', 'https://cash-flow-now-ten.vercel.app/');
+            }
+
+            if (primaryCta) {
+                primaryCta.setAttribute('href', 'https://cash-flow-now-ten.vercel.app/?screen=upload');
+            }
+
+            console.log('%cLanding page ready for deployment!', 'color:#00d4c8; font-size:13px; font-weight:bold');
         }
         window.onload = initializeTailwind;
     </script>

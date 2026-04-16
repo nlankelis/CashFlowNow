@@ -1,10 +1,18 @@
 import { Upload, TrendingUp, Clock, Award } from "lucide-react";
+import type { DashboardMetrics } from "../lib/invoiceHistory";
 
 interface DashboardHomeProps {
   onUploadClick: () => void;
+  metrics: DashboardMetrics;
 }
 
-export default function DashboardHome({ onUploadClick }: DashboardHomeProps) {
+const currency = new Intl.NumberFormat("en-GB", {
+  style: "currency",
+  currency: "GBP",
+  maximumFractionDigits: 0,
+});
+
+export default function DashboardHome({ onUploadClick, metrics }: DashboardHomeProps) {
   return (
     <div>
       <div className="mb-10">
@@ -20,8 +28,8 @@ export default function DashboardHome({ onUploadClick }: DashboardHomeProps) {
             <div className="text-gray-500 text-sm font-medium">TOTAL ADVANCED</div>
             <TrendingUp className="text-[#00d4c8]" size={24} />
           </div>
-          <div className="text-4xl font-bold text-[#0a2540] mb-1">GBP24,850</div>
-          <div className="text-emerald-600 text-sm font-medium">+GBP8,200 this week</div>
+          <div className="text-4xl font-bold text-[#0a2540] mb-1">{currency.format(metrics.totalAdvanced)}</div>
+          <div className="text-emerald-600 text-sm font-medium">Approved invoice advances to date</div>
         </div>
 
         <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
@@ -29,8 +37,8 @@ export default function DashboardHome({ onUploadClick }: DashboardHomeProps) {
             <div className="text-gray-500 text-sm font-medium">PENDING INVOICES</div>
             <Clock className="text-amber-500" size={24} />
           </div>
-          <div className="text-4xl font-bold text-[#0a2540] mb-1">12</div>
-          <div className="text-amber-600 text-sm font-medium">Worth GBP31,450</div>
+          <div className="text-4xl font-bold text-[#0a2540] mb-1">{metrics.pendingInvoices}</div>
+          <div className="text-amber-600 text-sm font-medium">Awaiting manual review</div>
         </div>
 
         <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
@@ -38,7 +46,7 @@ export default function DashboardHome({ onUploadClick }: DashboardHomeProps) {
             <div className="text-gray-500 text-sm font-medium">AVG APPROVAL TIME</div>
             <Award className="text-[#00d4c8]" size={24} />
           </div>
-          <div className="text-4xl font-bold text-[#0a2540] mb-1">18s</div>
+          <div className="text-4xl font-bold text-[#0a2540] mb-1">{metrics.avgApprovalTimeSeconds.toFixed(1)}s</div>
           <div className="text-[#00d4c8] text-sm font-medium">Truth Engine powered</div>
         </div>
 
@@ -47,8 +55,8 @@ export default function DashboardHome({ onUploadClick }: DashboardHomeProps) {
             <div className="text-gray-500 text-sm font-medium">THIS MONTH SAVED</div>
             <TrendingUp className="text-[#00d4c8]" size={24} />
           </div>
-          <div className="text-4xl font-bold text-[#0a2540] mb-1">GBP1,340</div>
-          <div className="text-emerald-600 text-sm font-medium">vs traditional banks</div>
+          <div className="text-4xl font-bold text-[#0a2540] mb-1">{currency.format(metrics.thisMonthSavings)}</div>
+          <div className="text-emerald-600 text-sm font-medium">vs traditional banks in the last 30 days</div>
         </div>
       </div>
 

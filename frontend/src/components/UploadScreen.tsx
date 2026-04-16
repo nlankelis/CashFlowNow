@@ -3,16 +3,35 @@ import { Upload, File, X, Loader2, AlertTriangle } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { API_BASE_URL } from "../api";
-import type { InvoiceDecisionResponse } from "../types/invoice";
+import type { ProcessedInvoiceResult } from "../types/invoice";
 
 interface UploadScreenProps {
-  onResultsReady: (results: InvoiceDecisionResponse[]) => void;
+  onResultsReady: (results: ProcessedInvoiceResult[]) => void;
 }
+
+interface SupplementalFields {
+  invoice_number: string;
+  amount: string;
+  due_date: string;
+  debtor_name: string;
+  debtor_email: string;
+  debtor_phone: string;
+}
+
+const emptySupplementalFields: SupplementalFields = {
+  invoice_number: "",
+  amount: "",
+  due_date: "",
+  debtor_name: "",
+  debtor_email: "",
+  debtor_phone: "",
+};
 
 export default function UploadScreen({ onResultsReady }: UploadScreenProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [supplemental, setSupplemental] = useState<SupplementalFields>(emptySupplementalFields);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setError(null);
@@ -28,20 +47,34 @@ export default function UploadScreen({ onResultsReady }: UploadScreenProps) {
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const updateSupplementalField = (field: keyof SupplementalFields, value: string) => {
+    setSupplemental((current) => ({ ...current, [field]: value }));
+  };
+
   const handleProcess = async () => {
     if (files.length === 0) return;
     setIsProcessing(true);
     setError(null);
 
     try {
-      const results: InvoiceDecisionResponse[] = [];
+      const results: ProcessedInvoiceResult[] = [];
       for (const file of files) {
+        const startedAt = performance.now();
         const formData = new FormData();
         formData.append("file", file);
-        const response = await axios.post<InvoiceDecisionResponse>(`${API_BASE_URL}/process-invoice`, formData, {
+        Object.entries(supplemental).forEach(([key, value]) => {
+          if (value.trim()) {
+            formData.append(key, value.trim());
+          }
+        });
+
+        const response = await axios.post(`${API_BASE_URL}/process-invoice`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
-        results.push(response.data);
+        results.push({
+          ...response.data,
+          processing_time_ms: Math.round(performance.now() - startedAt),
+        });
       }
 
       onResultsReady(results);
@@ -62,7 +95,7 @@ export default function UploadScreen({ onResultsReady }: UploadScreenProps) {
         Upload Invoices
       </h1>
       <p className="text-gray-600 mb-8 text-xl">
-        Truth Engine MVP extracts invoice fields and returns an instant factoring decision.
+        Truth Engine extracts invoice fields and returns an instant factoring decision.
       </p>
 
       <div
@@ -84,6 +117,82 @@ export default function UploadScreen({ onResultsReady }: UploadScreenProps) {
             <p className="text-xs text-gray-400 mt-6">PDF only • Max 20 files • Max 10MB per file</p>
           </>
         )}
+      </div>
+
+      <div className="mb-8 rounded-3xl border border-gray-100 bg-white p-6">
+        <div className="mb-4">
+          <h3 className="text-xl font-semibold text-[#0a2540]">Optional extra details</h3>
+          <p className="text-sm text-gray-500 mt-1">
+            These values are used only when the PDF does not clearly contain them.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <label className="block">
+            <span className="mb-2 block text-sm font-medium text-gray-700">Invoice number</span>
+            <input
+              type="text"
+              value={supplemental.invoice_number}
+              onChange={(event) => updateSupplementalField("invoice_number", event.target.value)}
+              className="w-full rounded-2xl border border-gray-200 px-4 py-3 focus:border-[#00d4c8] focus:outline-none"
+              placeholder="INV-10024"
+            />
+          </label>
+
+          <label className="block">
+            <span className="mb-2 block text-sm font-medium text-gray-700">Amount</span>
+            <input
+              type="text"
+              value={supplemental.amount}
+              onChange={(event) => updateSupplementalField("amount", event.target.value)}
+              className="w-full rounded-2xl border border-gray-200 px-4 py-3 focus:border-[#00d4c8] focus:outline-none"
+              placeholder="1259.57"
+            />
+          </label>
+
+          <label className="block">
+            <span className="mb-2 block text-sm font-medium text-gray-700">Due date</span>
+            <input
+              type="date"
+              value={supplemental.due_date}
+              onChange={(event) => updateSupplementalField("due_date", event.target.value)}
+              className="w-full rounded-2xl border border-gray-200 px-4 py-3 focus:border-[#00d4c8] focus:outline-none"
+            />
+          </label>
+
+          <label className="block">
+            <span className="mb-2 block text-sm font-medium text-gray-700">Debtor name</span>
+            <input
+              type="text"
+              value={supplemental.debtor_name}
+              onChange={(event) => updateSupplementalField("debtor_name", event.target.value)}
+              className="w-full rounded-2xl border border-gray-200 px-4 py-3 focus:border-[#00d4c8] focus:outline-none"
+              placeholder="Northgate Electrical Services"
+            />
+          </label>
+
+          <label className="block">
+            <span className="mb-2 block text-sm font-medium text-gray-700">Debtor email</span>
+            <input
+              type="email"
+              value={supplemental.debtor_email}
+              onChange={(event) => updateSupplementalField("debtor_email", event.target.value)}
+              className="w-full rounded-2xl border border-gray-200 px-4 py-3 focus:border-[#00d4c8] focus:outline-none"
+              placeholder="accounts@company.com"
+            />
+          </label>
+
+          <label className="block">
+            <span className="mb-2 block text-sm font-medium text-gray-700">Debtor phone</span>
+            <input
+              type="text"
+              value={supplemental.debtor_phone}
+              onChange={(event) => updateSupplementalField("debtor_phone", event.target.value)}
+              className="w-full rounded-2xl border border-gray-200 px-4 py-3 focus:border-[#00d4c8] focus:outline-none"
+              placeholder="+44 20 1234 5678"
+            />
+          </label>
+        </div>
       </div>
 
       {files.length > 0 && (
