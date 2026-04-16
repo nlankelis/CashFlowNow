@@ -1,35 +1,25 @@
 import { Home, Upload, History, LogOut } from "lucide-react";
 
-type Screen = "home" | "upload" | "results" | "history";   // ← removed "auth"
+type Screen = "home" | "upload" | "results" | "history";
 
 interface SidebarProps {
   currentScreen: Screen;
   setCurrentScreen: (screen: Screen) => void;
-  onLogout: () => void;           // ← required for logout
+  onLogout: () => void;
 }
 
-export default function Sidebar({ 
-  currentScreen, 
-  setCurrentScreen, 
-  onLogout 
-}: SidebarProps) {
+export default function Sidebar({ currentScreen, setCurrentScreen, onLogout }: SidebarProps) {
   return (
     <div className="w-72 bg-white border-r border-gray-100 flex flex-col">
-      {/* Logo - Correct path for Vercel */}
       <div className="p-6 border-b">
         <div className="flex items-center gap-3">
-          <img 
-            src="/LogoNoBG.png" 
-            alt="CashFlowNow" 
-            className="h-9 w-auto" 
-          />
+          <img src="/LogoNoBG.png" alt="CashFlowNow" className="h-9 w-auto" />
           <span className="heading-font text-3xl font-semibold tracking-tighter text-[#0a2540]">
             CashFlowNow
           </span>
         </div>
       </div>
 
-      {/* Menu */}
       <div className="flex-1 p-4 space-y-1">
         <button
           onClick={() => setCurrentScreen("home")}
@@ -62,9 +52,8 @@ export default function Sidebar({
         </button>
       </div>
 
-      {/* Sign Out - Now works */}
       <div className="p-4 border-t mt-auto">
-        <button 
+        <button
           onClick={onLogout}
           className="w-full flex items-center gap-3 px-5 py-4 text-red-600 hover:bg-red-50 rounded-3xl transition-all"
         >

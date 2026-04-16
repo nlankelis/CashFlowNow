@@ -2,13 +2,12 @@ import { useCallback, useState } from "react";
 import { Upload, File, X, Loader2, AlertTriangle } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
+import { API_BASE_URL } from "../api";
 import type { InvoiceDecisionResponse } from "../types/invoice";
 
 interface UploadScreenProps {
   onResultsReady: (results: InvoiceDecisionResponse[]) => void;
 }
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000";
 
 export default function UploadScreen({ onResultsReady }: UploadScreenProps) {
   const [files, setFiles] = useState<File[]>([]);

@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import hashlib
+import os
 import re
+import sqlite3
 import zlib
 from collections import Counter, deque
 from datetime import date, datetime
@@ -13,9 +15,23 @@ from pydantic import BaseModel
 
 app = FastAPI(title="CashFlowNow API")
 
+DEFAULT_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:5173",
+    "http://localhost:5173",
+    "https://nlankelis.github.io",
+    "https://cash-flow-now-ten.vercel.app",
+]
+ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv("ALLOWED_ORIGINS", ",".join(DEFAULT_ALLOWED_ORIGINS)).split(",")
+    if origin.strip()
+]
+ALLOWED_ORIGIN_REGEX = os.getenv("ALLOWED_ORIGIN_REGEX", r"https://.*\.vercel\.app")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:5173", "http://localhost:5173", "https://cash-flow-now-ten.vercel.app", "https://*.vercel.app"],
+    allow_origins=ALLOWED_ORIGINS,
+    allow_origin_regex=ALLOWED_ORIGIN_REGEX,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -25,11 +41,41 @@ MAX_PDF_SIZE_BYTES = 10 * 1024 * 1024
 MANUAL_REVIEW_AMOUNT_THRESHOLD = 150_000
 REJECT_AMOUNT_THRESHOLD = 1_000_000
 MAX_LAYOUT_SIGNATURES = 100
+DATABASE_PATH = os.getenv("DATABASE_PATH", os.path.join(os.path.dirname(__file__), "cashflownow.db"))
 
 seen_file_hashes: set[str] = set()
 seen_invoice_numbers: set[str] = set()
 invoice_key_counter: Counter[str] = Counter()
 layout_signatures: deque[str] = deque(maxlen=MAX_LAYOUT_SIGNATURES)
+
+
+def _get_db_connection() -> sqlite3.Connection:
+    connection = sqlite3.connect(DATABASE_PATH)
+    connection.row_factory = sqlite3.Row
+    return connection
+
+
+def _init_db() -> None:
+    with _get_db_connection() as connection:
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                full_name TEXT NOT NULL,
+                email TEXT NOT NULL UNIQUE,
+                password_hash TEXT NOT NULL,
+                created_at TEXT NOT NULL
+            )
+            """
+        )
+        connection.commit()
+
+
+def _hash_password(password: str) -> str:
+    return hashlib.sha256(password.encode("utf-8")).hexdigest()
+
+
+_init_db()
 
 
 class ExtractedInvoiceFields(BaseModel):
@@ -82,6 +128,27 @@ class InvoiceDecisionResponse(BaseModel):
     decision: Literal["approved", "manual_review", "rejected"]
     decision_reasons: list[str]
     offer: OfferDetails | None
+
+
+class RegisterRequest(BaseModel):
+    full_name: str
+    email: str
+    password: str
+
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+
+class AuthUserResponse(BaseModel):
+    id: int
+    full_name: str
+    email: str
+
+
+class AuthResponse(BaseModel):
+    user: AuthUserResponse
 
 
 def parse_pdf_text(file_content: bytes) -> str:
@@ -652,6 +719,72 @@ def analyze_invoice(file_name: str, file_content: bytes) -> InvoiceDecisionRespo
 @app.get("/health")
 def health_check() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.post("/auth/register", response_model=AuthResponse)
+def register_user(payload: RegisterRequest) -> AuthResponse:
+    full_name = payload.full_name.strip()
+    email = payload.email.strip().lower()
+    password = payload.password
+
+    if not full_name:
+        raise HTTPException(status_code=400, detail="Full name is required.")
+    if not email:
+        raise HTTPException(status_code=400, detail="Email is required.")
+    if len(password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters.")
+
+    password_hash = _hash_password(password)
+    created_at = datetime.utcnow().isoformat()
+
+    try:
+        with _get_db_connection() as connection:
+            cursor = connection.execute(
+                """
+                INSERT INTO users (full_name, email, password_hash, created_at)
+                VALUES (?, ?, ?, ?)
+                """,
+                (full_name, email, password_hash, created_at),
+            )
+            connection.commit()
+            user_id = cursor.lastrowid
+    except sqlite3.IntegrityError as exc:
+        raise HTTPException(status_code=400, detail="An account with that email already exists.") from exc
+
+    return AuthResponse(
+        user=AuthUserResponse(
+            id=user_id,
+            full_name=full_name,
+            email=email,
+        )
+    )
+
+
+@app.post("/auth/login", response_model=AuthResponse)
+def login_user(payload: LoginRequest) -> AuthResponse:
+    email = payload.email.strip().lower()
+    password_hash = _hash_password(payload.password)
+
+    with _get_db_connection() as connection:
+        user = connection.execute(
+            """
+            SELECT id, full_name, email, password_hash
+            FROM users
+            WHERE email = ?
+            """,
+            (email,),
+        ).fetchone()
+
+    if user is None or user["password_hash"] != password_hash:
+        raise HTTPException(status_code=401, detail="Invalid email or password.")
+
+    return AuthResponse(
+        user=AuthUserResponse(
+            id=int(user["id"]),
+            full_name=str(user["full_name"]),
+            email=str(user["email"]),
+        )
+    )
 
 
 @app.post("/process-invoice", response_model=InvoiceDecisionResponse)
