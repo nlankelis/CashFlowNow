@@ -12,12 +12,12 @@ export default function Sidebar({ currentScreen, setCurrentScreen, onLogout }: S
   return (
     <div className="w-72 bg-white border-r border-gray-100 flex flex-col">
       <div className="p-6 border-b">
-        <div className="flex items-center gap-3">
+        <a href="https://nlankelis.github.io/CashFlowNow/" className="flex items-center gap-3">
           <img src="/LogoNoBG.png" alt="CashFlowNow" className="h-9 w-auto" />
           <span className="heading-font text-3xl font-semibold tracking-tighter text-[#0a2540]">
             CashFlowNow
           </span>
-        </div>
+        </a>
       </div>
 
       <div className="flex-1 p-4 space-y-1">

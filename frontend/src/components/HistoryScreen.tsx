@@ -1,46 +1,43 @@
 import { Download, CheckCircle, Clock, ArrowUpRight } from "lucide-react";
 
-const mockHistory = [
+const invoiceHistory = [
   {
-    id: "INV-7842",
-    client: "GreenTech Solutions Ltd",
-    date: "12 Apr 2026",
-    amount: 2450,
-    funded: 2327,
+    id: "CFN-2026-1048",
+    client: "Northgate Electrical Services",
+    date: "14 Apr 2026",
+    amount: 18450,
+    funded: 17066,
     status: "collected" as const,
-    days: 14,
   },
   {
-    id: "INV-7841",
-    client: "Harbour Logistics",
-    date: "10 Apr 2026",
-    amount: 890,
-    funded: 845,
-    status: "collected" as const,
-    days: 9,
-  },
-  {
-    id: "INV-7840",
-    client: "Peak Construction",
-    date: "08 Apr 2026",
-    amount: 3200,
-    funded: 3040,
+    id: "CFN-2026-1041",
+    client: "Lark & Stone Interiors",
+    date: "11 Apr 2026",
+    amount: 12600,
+    funded: 11655,
     status: "funded" as const,
-    days: 3,
   },
   {
-    id: "INV-7839",
-    client: "BrightPrint Design",
-    date: "05 Apr 2026",
-    amount: 1250,
-    funded: 1187,
+    id: "CFN-2026-1036",
+    client: "Peak Construction Group",
+    date: "09 Apr 2026",
+    amount: 28750,
+    funded: 26452,
     status: "collected" as const,
-    days: 18,
+  },
+  {
+    id: "CFN-2026-1029",
+    client: "Harbour Facilities Management",
+    date: "04 Apr 2026",
+    amount: 9400,
+    funded: 8648,
+    status: "funded" as const,
   },
 ];
 
 export default function HistoryScreen() {
-  const totalFunded = mockHistory.reduce((sum, item) => sum + item.funded, 0);
+  const totalFunded = invoiceHistory.reduce((sum, item) => sum + item.funded, 0);
+  const fundedCount = invoiceHistory.length;
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -49,34 +46,29 @@ export default function HistoryScreen() {
           <h1 className="heading-font text-5xl font-semibold tracking-tighter text-[#0a2540]">
             Funding History
           </h1>
-          <p className="text-gray-600 text-xl mt-2">
-            Every invoice you’ve turned into instant cash
-          </p>
+          <p className="text-gray-600 text-xl mt-2">Recent invoices processed through the platform</p>
         </div>
 
         <div className="text-right">
-          <div className="text-sm text-gray-500">TOTAL FUNDED THIS QUARTER</div>
-          <div className="text-5xl font-bold text-[#0a2540] mt-1">
-            £{totalFunded.toLocaleString()}
-          </div>
+          <div className="text-sm text-gray-500">TOTAL FUNDED THIS MONTH</div>
+          <div className="text-5xl font-bold text-[#0a2540] mt-1">GBP{totalFunded.toLocaleString()}</div>
           <div className="text-emerald-600 text-sm flex items-center gap-1 justify-end mt-1">
             <ArrowUpRight size={16} />
-            +18% from last quarter
+            +18% from last month
           </div>
         </div>
       </div>
 
-      {/* Summary Cards */}
       <div className="grid grid-cols-3 gap-6 mb-10">
         <div className="bg-white rounded-3xl p-6 border border-gray-100">
           <div className="flex items-center justify-between">
             <div>
               <div className="text-sm font-medium text-gray-500">INVOICES FUNDED</div>
-              <div className="text-4xl font-bold text-[#0a2540] mt-2">47</div>
+              <div className="text-4xl font-bold text-[#0a2540] mt-2">{fundedCount}</div>
             </div>
             <CheckCircle className="text-[#00d4c8]" size={48} />
           </div>
-          <div className="text-emerald-600 text-sm mt-6">100% verified by Truth Engine™</div>
+          <div className="text-emerald-600 text-sm mt-6">Submitted and verified by Truth Engine</div>
         </div>
 
         <div className="bg-white rounded-3xl p-6 border border-gray-100">
@@ -85,7 +77,7 @@ export default function HistoryScreen() {
               <div className="text-sm font-medium text-gray-500">AVG DISCOUNT</div>
               <div className="text-4xl font-bold text-[#0a2540] mt-2">4.8%</div>
             </div>
-            <div className="text-4xl">📉</div>
+            <div className="text-4xl">GBP</div>
           </div>
           <div className="text-emerald-600 text-sm mt-6">Better than traditional factoring</div>
         </div>
@@ -98,11 +90,10 @@ export default function HistoryScreen() {
             </div>
             <Clock className="text-[#00d4c8]" size={48} />
           </div>
-          <div className="text-[#00d4c8] text-sm mt-6">Truth Engine record</div>
+          <div className="text-[#00d4c8] text-sm mt-6">Fastest verified funding decision</div>
         </div>
       </div>
 
-      {/* History Table */}
       <div className="bg-white rounded-3xl border border-gray-100 overflow-hidden">
         <table className="w-full">
           <thead className="bg-gray-50 border-b">
@@ -116,16 +107,14 @@ export default function HistoryScreen() {
             </tr>
           </thead>
           <tbody className="divide-y">
-            {mockHistory.map((item) => (
+            {invoiceHistory.map((item) => (
               <tr key={item.id} className="hover:bg-gray-50 transition-colors">
                 <td className="py-5 px-8 font-medium">{item.id}</td>
                 <td className="py-5 px-8 text-gray-700">{item.client}</td>
                 <td className="py-5 px-8 text-gray-600">{item.date}</td>
-                <td className="py-5 px-8 text-right font-medium">
-                  £{item.amount.toLocaleString()}
-                </td>
+                <td className="py-5 px-8 text-right font-medium">GBP{item.amount.toLocaleString()}</td>
                 <td className="py-5 px-8 text-right font-semibold text-[#00d4c8]">
-                  £{item.funded.toLocaleString()}
+                  GBP{item.funded.toLocaleString()}
                 </td>
                 <td className="py-5 px-8 text-center">
                   {item.status === "collected" ? (
@@ -148,11 +137,10 @@ export default function HistoryScreen() {
 
       <div className="mt-8 text-center text-sm text-gray-400 flex items-center justify-center gap-2">
         <div className="h-px w-12 bg-gray-200"></div>
-        All invoices are protected by our Truth Engine™ and backed by Tier-1 UK banks
+        Platform-funded invoices with automated verification and debtor checks
         <div className="h-px w-12 bg-gray-200"></div>
       </div>
 
-      {/* Export button */}
       <button className="mt-10 mx-auto flex items-center gap-3 bg-white border border-gray-200 hover:border-gray-300 px-8 py-4 rounded-3xl font-medium text-gray-700 transition-all">
         <Download size={20} />
         Export full history (CSV)

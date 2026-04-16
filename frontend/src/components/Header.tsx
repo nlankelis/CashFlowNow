@@ -19,7 +19,7 @@ export default function Header({ currentUser, onLogout }: HeaderProps) {
   return (
     <header className="h-16 bg-white border-b px-8 flex items-center justify-between relative">
       <div className="flex items-center gap-3">
-        <span className="text-[#0a2540] font-semibold">Good morning, {currentUser.full_name}</span>
+        <span className="text-[#0a2540] font-semibold">CashFlowNow Dashboard</span>
       </div>
 
       <div className="flex items-center gap-6">
