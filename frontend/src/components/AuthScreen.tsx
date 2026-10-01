@@ -31,7 +31,10 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
           : { full_name: name, email, password };
 
       const response = await axios.post<AuthResponse>(`${API_BASE_URL}${endpoint}`, payload);
-      onLoginSuccess(response.data.user);
+      onLoginSuccess({
+        ...response.data.user,
+        access_token: response.data.access_token,
+      });
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.detail ?? "Unable to complete authentication.");

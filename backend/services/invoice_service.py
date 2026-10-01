@@ -1,22 +1,25 @@
 from __future__ import annotations
 
 import hashlib
-from collections import Counter, deque
-from datetime import date
+import json
+from datetime import date, datetime
 from typing import Literal
 
 from fastapi import HTTPException
 
 from config import (
     MANUAL_REVIEW_AMOUNT_THRESHOLD,
-    MAX_LAYOUT_SIGNATURES,
     MAX_PDF_SIZE_BYTES,
     REJECT_AMOUNT_THRESHOLD,
 )
+from database import get_db_connection
 from schemas import (
     ExtractedInvoiceFields,
     FraudSignals,
     InvoiceDecisionResponse,
+    InvoiceHistoryItemResponse,
+    InvoiceHistoryRecordResponse,
+    OfferDetails,
     SupplementalInvoiceFields,
     ValidationChecks,
 )
@@ -33,15 +36,11 @@ from utils.extractors import (
 )
 from utils.pdf_parser import parse_pdf_text
 
-seen_file_hashes: set[str] = set()
-seen_invoice_numbers: set[str] = set()
-invoice_key_counter: Counter[str] = Counter()
-layout_signatures: deque[str] = deque(maxlen=MAX_LAYOUT_SIGNATURES)
-
 
 def analyze_invoice(
     file_name: str,
     file_content: bytes,
+    user_id: int,
     supplemental: SupplementalInvoiceFields | None = None,
 ) -> InvoiceDecisionResponse:
     if len(file_content) > MAX_PDF_SIZE_BYTES:
@@ -80,16 +79,43 @@ def analyze_invoice(
     if not debtor_name:
         missing_fields.append("debtor_name")
 
-    duplicate_file = file_hash in seen_file_hashes
-    duplicate_invoice_number = bool(invoice_number and invoice_number in seen_invoice_numbers)
-    invoice_profile_key = f"{invoice_number}|{amount}|{due_dt}|{debtor_name}"
-    duplicate_invoice_profile = invoice_key_counter[invoice_profile_key] > 0
+    # Persistent duplicate & fraud checks via SQLite database
+    with get_db_connection() as conn:
+        dup_file = conn.execute(
+            "SELECT id FROM invoices WHERE file_hash = ? LIMIT 1",
+            (file_hash,),
+        ).fetchone()
+        duplicate_file = dup_file is not None
+
+        duplicate_invoice_number = False
+        if invoice_number:
+            dup_num = conn.execute(
+                "SELECT id FROM invoices WHERE user_id = ? AND invoice_number = ? LIMIT 1",
+                (user_id, invoice_number),
+            ).fetchone()
+            duplicate_invoice_number = dup_num is not None
+
+        dup_profile = conn.execute(
+            """
+            SELECT id FROM invoices
+            WHERE user_id = ? AND invoice_number = ? AND amount = ? AND due_date = ? AND debtor_name = ?
+            LIMIT 1
+            """,
+            (user_id, invoice_number, amount, due_dt.isoformat() if due_dt else None, debtor_name),
+        ).fetchone()
+        duplicate_invoice_profile = dup_profile is not None
+
+        past_sig_rows = conn.execute(
+            "SELECT layout_signature FROM invoices WHERE user_id = ? AND layout_signature IS NOT NULL ORDER BY id DESC LIMIT 50",
+            (user_id,),
+        ).fetchall()
+        past_signatures = {r["layout_signature"] for r in past_sig_rows}
 
     is_overdue = bool(due_dt and due_dt < date.today())
     amount_outlier = bool(amount and amount > MANUAL_REVIEW_AMOUNT_THRESHOLD)
 
     layout_signature = build_layout_signature(raw_text)
-    format_consistent = None if not layout_signatures else layout_signature in set(layout_signatures)
+    format_consistent = None if not past_signatures else layout_signature in past_signatures
 
     debtor_domain_ok = debtor_email_matches_company(debtor_email, debtor_name)
     suspicious_pattern = duplicate_file or duplicate_invoice_profile
@@ -135,14 +161,7 @@ def analyze_invoice(
     if amount and decision in {"approved", "manual_review"}:
         offer = calculate_offer(amount=amount, due_dt=due_dt, risk=risk, suspicious=suspicious_pattern)
 
-    # Update in-memory history after evaluation.
-    seen_file_hashes.add(file_hash)
-    if invoice_number:
-        seen_invoice_numbers.add(invoice_number)
-    invoice_key_counter[invoice_profile_key] += 1
-    layout_signatures.append(layout_signature)
-
-    return InvoiceDecisionResponse(
+    decision_response = InvoiceDecisionResponse(
         filename=file_name,
         extracted_fields=ExtractedInvoiceFields(
             invoice_number=invoice_number,
@@ -172,3 +191,118 @@ def analyze_invoice(
         offer=offer,
     )
 
+    # Persist the processed invoice into SQLite
+    with get_db_connection() as conn:
+        conn.execute(
+            """
+            INSERT INTO invoices (
+                user_id, file_hash, invoice_number, amount, due_date, debtor_name,
+                decision, raw_ocr_text, layout_signature, offer_json, decision_json, created_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                user_id,
+                file_hash,
+                invoice_number,
+                amount,
+                due_dt.isoformat() if due_dt else None,
+                debtor_name,
+                decision,
+                raw_text[:2000],
+                layout_signature,
+                offer.model_dump_json() if offer else None,
+                decision_response.model_dump_json(),
+                datetime.utcnow().isoformat(),
+            ),
+        )
+        conn.commit()
+
+    return decision_response
+
+
+def get_user_invoices(user_id: int) -> list[InvoiceHistoryRecordResponse]:
+    with get_db_connection() as conn:
+        rows = conn.execute(
+            """
+            SELECT id, user_id, file_hash, invoice_number, amount, due_date, debtor_name,
+                   decision, offer_json, decision_json, created_at
+            FROM invoices
+            WHERE user_id = ?
+            ORDER BY id DESC
+            """,
+            (user_id,),
+        ).fetchall()
+
+    items: list[InvoiceHistoryRecordResponse] = []
+    for row in rows:
+        created_at_str = str(row["created_at"])
+        if row["decision_json"]:
+            try:
+                dec_data = json.loads(row["decision_json"])
+                items.append(
+                    InvoiceHistoryRecordResponse(
+                        history_id=str(row["id"]),
+                        processed_at=created_at_str,
+                        filename=dec_data.get("filename", "invoice.pdf"),
+                        extracted_fields=ExtractedInvoiceFields(**dec_data.get("extracted_fields", {})),
+                        validation_checks=ValidationChecks(**dec_data.get("validation_checks", {})),
+                        risk=dec_data.get("risk", mock_debtor_risk_profile(row["debtor_name"])),
+                        fraud_signals=dec_data.get("fraud_signals", {
+                            "debtor_email_domain_matches_company": None,
+                            "format_consistent_with_history": None,
+                            "suspicious_submitter_pattern": False,
+                            "flags": [],
+                        }),
+                        decision=dec_data.get("decision", row["decision"]),
+                        decision_reasons=dec_data.get("decision_reasons", []),
+                        offer=OfferDetails(**dec_data["offer"]) if dec_data.get("offer") else None,
+                        processing_time_ms=0,
+                    )
+                )
+                continue
+            except Exception:
+                pass
+
+        offer_data = None
+        if row["offer_json"]:
+            try:
+                offer_data = OfferDetails(**json.loads(row["offer_json"]))
+            except Exception:
+                offer_data = None
+
+        items.append(
+            InvoiceHistoryRecordResponse(
+                history_id=str(row["id"]),
+                processed_at=created_at_str,
+                filename="invoice.pdf",
+                extracted_fields=ExtractedInvoiceFields(
+                    invoice_number=row["invoice_number"],
+                    amount=float(row["amount"]) if row["amount"] is not None else None,
+                    due_date=row["due_date"],
+                    debtor_name=row["debtor_name"],
+                    debtor_email=None,
+                    debtor_phone=None,
+                ),
+                validation_checks=ValidationChecks(
+                    missing_fields=[],
+                    is_overdue=False,
+                    duplicate_file=False,
+                    duplicate_invoice_number=False,
+                    duplicate_invoice_profile=False,
+                    amount_outlier=False,
+                ),
+                risk=mock_debtor_risk_profile(row["debtor_name"]),
+                fraud_signals=FraudSignals(
+                    debtor_email_domain_matches_company=None,
+                    format_consistent_with_history=None,
+                    suspicious_submitter_pattern=False,
+                    flags=[],
+                ),
+                decision=str(row["decision"]),
+                decision_reasons=[],
+                offer=offer_data,
+                processing_time_ms=0,
+            )
+        )
+    return items

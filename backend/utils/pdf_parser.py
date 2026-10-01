@@ -8,15 +8,17 @@ def parse_pdf_text(file_content: bytes) -> str:
     chunks.extend(_extract_struct_tag_text(file_content))
     chunks.extend(_extract_hex_glyph_text(file_content))
 
-    # Extract compressed streams (common in production-generated invoices).
+    # Extract compressed streams (bounded to prevent decompression bombs)
+    max_decompressed_bytes = 5 * 1024 * 1024
     for stream in re.findall(rb"stream\r?\n(.*?)\r?\nendstream", file_content, flags=re.DOTALL):
         for wbits in (zlib.MAX_WBITS, -zlib.MAX_WBITS):
             try:
-                inflated = zlib.decompress(stream, wbits)
+                decompressor = zlib.decompressobj(wbits)
+                inflated = decompressor.decompress(stream, max_length=max_decompressed_bytes)
                 chunks.extend(_extract_pdf_operator_text(inflated))
                 chunks.extend(_extract_hex_glyph_text(inflated))
                 break
-            except zlib.error:
+            except (zlib.error, MemoryError):
                 continue
 
     if not chunks:

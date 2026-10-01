@@ -3,10 +3,12 @@ import { Upload, File, X, Loader2, AlertTriangle } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { API_BASE_URL } from "../api";
+import type { AuthUser } from "../types/auth";
 import type { ProcessedInvoiceResult } from "../types/invoice";
 
 interface UploadScreenProps {
   onResultsReady: (results: ProcessedInvoiceResult[]) => void;
+  currentUser?: AuthUser | null;
 }
 
 interface SupplementalFields {
@@ -27,7 +29,7 @@ const emptySupplementalFields: SupplementalFields = {
   debtor_phone: "",
 };
 
-export default function UploadScreen({ onResultsReady }: UploadScreenProps) {
+export default function UploadScreen({ onResultsReady, currentUser }: UploadScreenProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -58,6 +60,7 @@ export default function UploadScreen({ onResultsReady }: UploadScreenProps) {
 
     try {
       const results: ProcessedInvoiceResult[] = [];
+      const token = currentUser?.access_token;
       for (const file of files) {
         const startedAt = performance.now();
         const formData = new FormData();
@@ -69,7 +72,10 @@ export default function UploadScreen({ onResultsReady }: UploadScreenProps) {
         });
 
         const response = await axios.post(`${API_BASE_URL}/process-invoice`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: {
+            "Content-Type": "multipart/form-data",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
         });
         results.push({
           ...response.data,

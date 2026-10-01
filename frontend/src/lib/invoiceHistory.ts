@@ -1,9 +1,12 @@
+import axios from "axios";
+import { API_BASE_URL } from "../api";
 import type { AuthUser } from "../types/auth";
 import type { InvoiceHistoryRecord, ProcessedInvoiceResult } from "../types/invoice";
 
 const HISTORY_STORAGE_PREFIX = "cashflownow-invoice-history";
 const TRADITIONAL_BANK_FEE_RATE = 0.08;
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
+
 
 export interface DashboardMetrics {
   totalAdvanced: number;
@@ -37,6 +40,22 @@ export function loadInvoiceHistory(user: AuthUser): InvoiceHistoryRecord[] {
   } catch {
     window.localStorage.removeItem(getHistoryStorageKey(user));
     return [];
+  }
+}
+
+export async function fetchInvoiceHistory(user: AuthUser): Promise<InvoiceHistoryRecord[]> {
+  try {
+    const token = user.access_token;
+    const response = await axios.get<InvoiceHistoryRecord[]>(`${API_BASE_URL}/invoices/history`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (Array.isArray(response.data)) {
+      window.localStorage.setItem(getHistoryStorageKey(user), JSON.stringify(response.data));
+      return response.data;
+    }
+    return loadInvoiceHistory(user);
+  } catch {
+    return loadInvoiceHistory(user);
   }
 }
 

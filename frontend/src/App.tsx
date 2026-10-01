@@ -9,6 +9,7 @@ import AuthScreen from "./components/AuthScreen";
 import {
   appendInvoiceHistory,
   computeDashboardMetrics,
+  fetchInvoiceHistory,
   loadInvoiceHistory,
 } from "./lib/invoiceHistory";
 import type { AuthUser } from "./types/auth";
@@ -57,6 +58,14 @@ function App() {
     }
 
     setHistory(loadInvoiceHistory(currentUser));
+
+    if (currentUser.access_token) {
+      fetchInvoiceHistory(currentUser).then((remoteHistory) => {
+        if (remoteHistory) {
+          setHistory(remoteHistory);
+        }
+      });
+    }
   }, [currentUser]);
 
   const handleLogout = () => {
@@ -93,6 +102,7 @@ function App() {
           )}
           {currentScreen === "upload" && (
             <UploadScreen
+              currentUser={currentUser}
               onResultsReady={(invoiceResults) => {
                 const savedHistory = appendInvoiceHistory(currentUser, invoiceResults);
                 setHistory(savedHistory);

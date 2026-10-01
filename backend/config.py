@@ -11,7 +11,10 @@ ALLOWED_ORIGINS = [
     for origin in os.getenv("ALLOWED_ORIGINS", ",".join(DEFAULT_ALLOWED_ORIGINS)).split(",")
     if origin.strip()
 ]
-ALLOWED_ORIGIN_REGEX = os.getenv("ALLOWED_ORIGIN_REGEX", r"https://.*\.vercel\.app")
+ALLOWED_ORIGIN_REGEX = os.getenv(
+    "ALLOWED_ORIGIN_REGEX",
+    r"https://cash-flow-now(-[a-z0-9]+)?\.vercel\.app",
+)
 
 MAX_PDF_SIZE_BYTES = 10 * 1024 * 1024
 MANUAL_REVIEW_AMOUNT_THRESHOLD = 150_000
@@ -19,3 +22,6 @@ REJECT_AMOUNT_THRESHOLD = 1_000_000
 MAX_LAYOUT_SIGNATURES = 100
 DATABASE_PATH = os.getenv("DATABASE_PATH", os.path.join(os.path.dirname(__file__), "cashflownow.db"))
 
+JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "cashflownow-dev-secret-key-change-in-production-1234567890")
+JWT_ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24

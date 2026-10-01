@@ -77,6 +77,8 @@ class AuthUserResponse(BaseModel):
 
 class AuthResponse(BaseModel):
     user: AuthUserResponse
+    access_token: str
+    token_type: str = "bearer"
 
 
 class SupplementalInvoiceFields(BaseModel):
@@ -87,3 +89,29 @@ class SupplementalInvoiceFields(BaseModel):
     debtor_email: str | None = None
     debtor_phone: str | None = None
 
+
+class InvoiceHistoryItemResponse(BaseModel):
+    id: int
+    user_id: int
+    file_hash: str
+    invoice_number: str | None
+    amount: float | None
+    due_date: str | None
+    debtor_name: str | None
+    decision: str
+    offer: OfferDetails | None
+    created_at: str
+
+
+class InvoiceHistoryRecordResponse(BaseModel):
+    history_id: str
+    processed_at: str
+    filename: str
+    extracted_fields: ExtractedInvoiceFields
+    validation_checks: ValidationChecks
+    risk: RiskSignals
+    fraud_signals: FraudSignals
+    decision: Literal["approved", "manual_review", "rejected"]
+    decision_reasons: list[str]
+    offer: OfferDetails | None
+    processing_time_ms: int = 0
